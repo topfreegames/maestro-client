@@ -9,9 +9,10 @@ maestro-client is [maestro's](https://github.com/topfreegames/maestro) framework
 
 - [ ] maestro-client
     - [ ] docs
+    - [x] fake http server
     - [x] configuration (maestro url / ping interval)
     - [x] http client
     - [x] polling to retrieve (host / port)
     - [ ] deal with connection errors
-    - [ ] catch sigterm/sigkill and handle graceful shutdown
+    - [x] catch sigterm/sigkill and handle graceful shutdown
     - [ ] unity support
