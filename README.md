@@ -11,6 +11,7 @@ maestro-client is [maestro's](https://github.com/topfreegames/maestro) framework
     - [ ] docs
     - [x] configuration (maestro url / ping interval)
     - [x] http client
-    - [ ] polling to retrieve (host / port)
+    - [x] polling to retrieve (host / port)
+    - [ ] deal with connection errors
     - [ ] catch sigterm/sigkill and handle graceful shutdown
     - [ ] unity support

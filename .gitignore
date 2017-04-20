@@ -42,3 +42,7 @@ bin/*
 *.exe
 *.out
 *.app
+
+# Python stuff
+*.pyc
+venv

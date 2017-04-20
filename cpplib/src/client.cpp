@@ -5,8 +5,10 @@
 #include "../include/utils.h"
 #include <boost/format.hpp>
 #include "../include/client.h"
+#include "../include/json.hpp"
 
 using namespace Maestro;
+using json = nlohmann::json;
 
 Client::Client() {
   this->ping_interval = 30;
@@ -23,11 +25,15 @@ Client::Client(std::string maestro_api_url, int ping_interval) {
 }
 
 std::string Client::get_address(){
-   std::string address_url = (boost::format("%s/namespaces/%s/rooms/%s/address") 
+  std::string address_url = (boost::format("%s/namespaces/%s/rooms/%s/address") 
       % this->maestro_api_url % this->room_namespace % this->room_id).str();
-  RestClient::Response r = RestClient::put(address_url, "application/json", "{\"timestamp\": }");
-  //TODO fix return
-  return r.body;
+  RestClient::Response r = RestClient::get(address_url);
+	auto res = json::parse(r.body); 
+	if (res.at("success")) {
+		return (boost::format("%s:%d") % res.at("host").get<std::string>() % res.at("port")).str();
+	} else {
+		return "";
+	}
 }
 
 int Client::get_ping_interval(){
@@ -46,6 +52,13 @@ bool Client::initialize(){
   return true;
 }
 
+bool Client::initialize(std::string ns, std::string id){
+  this->room_namespace = ns;
+  this->room_id = id;
+  // TODO check for connectivity with maestro api
+  return true;
+}
+
 bool Client::match_ended() {
   return this->update_status(MATCH_ENDED);
 }
@@ -54,11 +67,12 @@ bool Client::match_started() {
   return this->update_status(MATCH_STARTED);
 }
 
-void Client::ping() {
+bool Client::ping() {
   std::string put_url = (boost::format("%s/namespaces/%s/rooms/%s/ping") 
       % this->maestro_api_url % this->room_namespace % this->room_id).str();
   RestClient::Response r = RestClient::put(put_url, "application/json", "{\"timestamp\": }");
-  //TODO get return
+	auto res = json::parse(r.body); 
+	return res.at("success");
 }
 
 bool Client::room_ready() {
@@ -79,6 +93,14 @@ bool Client::update_status(std::string status) {
   long timestamp = unix_timestamp();
   RestClient::Response r = RestClient::put(put_url, "application/json", 
       (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % status).str());
-  return true; //TODO get and return api return
+	auto res = json::parse(r.body); 
+	return res.at("success");
 }
 
+bool Client::terminated() {
+  return this->update_status(TERMINATED);
+}
+
+bool Client::terminating() {
+  return this->update_status(TERMINATING);
+}
