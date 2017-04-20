@@ -1,7 +1,12 @@
-#include <iostream>
-#include <thread>
+#include <atomic>
 #include <chrono>
-#include "../include/client.h"
+#include <condition_variable>
+#include <cstring>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <sys/signal.h>
+#include "../../cpplib/include/client.h"
 
 Maestro::Client *client;
 std::atomic<int> stop(0);
