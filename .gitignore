@@ -3,7 +3,7 @@ build
 lib/*
 
 # Ignore any executables
-bin/*
+*/bin/*
 
 # Ignore Mac specific files
 .DS_Store
