@@ -10,19 +10,15 @@ maestro-client is [maestro's](https://github.com/topfreegames/maestro) framework
   * C++11 or newer for building
 
 ## Building
-lib and example-room
+generate the makefiles using cmake
+```
+cmake .
+```
+then make the lib and example room with make
 ```
 make
 ```
-lib
-```
-make lib
-```
-example-room
-```
-make example-room
-```
-the ouput files will be at at ```cpplib/lib/libmaestro.a``` and ```example-room/bin/example```
+if everything went well then, the ouput files should be at at ```lib/libmaestro-client.a``` and ```bin/example```
 
 ## Release Map
 

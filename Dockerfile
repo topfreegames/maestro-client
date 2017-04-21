@@ -5,7 +5,7 @@ ARG boost_dir=boost_1_63_0
 ENV boost_version ${boost_version}
 COPY . /app-src
 WORKDIR /app-src
-RUN apt-get update && apt-get -y install build-essential libboost-dev cmake curl wget autoconf autogen \
+RUN apt-get update && apt-get -y install build-essential libboost-dev cmake curl wget autoconf autogen libtool \
     && cd /tmp && curl -L -o restclient.tar.gz https://github.com/mrtazz/restclient-cpp/archive/$RESTCLIENT_VERSION.tar.gz \
     && tar -zxf restclient.tar.gz && cd restclient-cpp-$RESTCLIENT_VERSION && ./autogen.sh \
     && ./configure && make install \
