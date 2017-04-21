@@ -6,7 +6,8 @@ maestro-client is [maestro's](https://github.com/topfreegames/maestro) framework
 ## Dependencies
   * [restclient-cpp](https://github.com/mrtazz/restclient-cpp)
   * [boost](http://www.boost.org/)
-  * C++11 or newer
+  * [cmake](https://cmake.org) for generating the Makefiles
+  * C++11 or newer for building
 
 ## Building
 lib and example-room

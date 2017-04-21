@@ -4,3 +4,13 @@ README.md
 */lib
 *.a
 *.o
+
+CMakeCache.txt
+jCMakeFiles
+jCMakeScripts
+jTesting
+jMakefile
+jcmake_install.cmake
+jinstall_manifest.txt
+jcompile_commands.json
+jCTestTestfile.cmake
