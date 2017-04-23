@@ -17,4 +17,4 @@ def update_status(namespace_name, room_name):
     return '{"success":true}'
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')

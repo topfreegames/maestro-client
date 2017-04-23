@@ -10,4 +10,4 @@ RUN apt-get update && apt-get -y install build-essential cmake libboost-dev curl
     && rm -rf /tmp /var/lib/apt
 ADD ./bin/example /app/example
 WORKDIR /app
-ENTRYPOINT ["/bin/bash"]
+CMD ["/app/example"]

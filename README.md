@@ -48,3 +48,5 @@ exit from the container and, as before, if everything went well then, the ouput 
     - [ ] deal with connection errors
     - [x] catch sigterm/sigkill and handle graceful shutdown
     - [ ] unity support
+    - [ ] tests
+    - [ ] error handling
