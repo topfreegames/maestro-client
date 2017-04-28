@@ -35,14 +35,14 @@ void initialize(){
   if (!api_url || strlen(api_url) == 0) {
 		api_url = "http://localhost:5000";
   }
-  char const * ns = std::getenv("MAESTRO_NAMESPACE");
-  char const * id = std::getenv("MAESTRO_ID");
-  if (!ns || !id || strlen(ns) == 0 || strlen(id) == 0) {
-		ns = "test";
+  char const * scheduler = std::getenv("MAESTRO_SCHEDULER_NAME");
+  char const * id = std::getenv("MAESTRO_ROOM_ID");
+  if (!scheduler || !id || strlen(scheduler) == 0 || strlen(id) == 0) {
+		scheduler = "test";
 		id = "test";
   }
   client = new Maestro::Client(api_url);
-  client->initialize(ns, id);
+  client->initialize(scheduler, id);
 }
 
 int main() {

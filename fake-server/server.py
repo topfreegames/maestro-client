@@ -3,16 +3,16 @@ from flask import request
 
 app = Flask(__name__)
 
-@app.route("/namespaces/<namespace_name>/rooms/<room_name>/address")
-def address_polling(namespace_name, room_name):
+@app.route("/scheduler/<scheduler_name>/rooms/<room_name>/address")
+def address_polling(scheduler_name, room_name):
     return '{"host":"localhost","port":6379,"success":true}'
 
-@app.route("/namespaces/<namespace_name>/rooms/<room_name>/ping", methods=['PUT'])
-def ping(namespace_name, room_name):
+@app.route("/scheduler/<scheduler_name>/rooms/<room_name>/ping", methods=['PUT'])
+def ping(scheduler_name, room_name):
     return '{"success":true}'
 
-@app.route("/namespaces/<namespace_name>/rooms/<room_name>/status", methods=['PUT'])
-def update_status(namespace_name, room_name):
+@app.route("/scheduler/<scheduler_name>/rooms/<room_name>/status", methods=['PUT'])
+def update_status(scheduler_name, room_name):
     print "update status called with data: {0}".format(request.data)
     return '{"success":true}'
 

@@ -25,8 +25,8 @@ Client::Client(std::string maestro_api_url, int ping_interval) {
 }
 
 std::string Client::get_address(){
-  std::string address_url = (boost::format("%s/namespaces/%s/rooms/%s/address") 
-      % this->maestro_api_url % this->room_namespace % this->room_id).str();
+  std::string address_url = (boost::format("%s/scheduler/%s/rooms/%s/address")
+      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
   RestClient::Response r = RestClient::get(address_url);
 	auto res = json::parse(r.body); 
 	if (res.at("success")) {
@@ -41,19 +41,19 @@ int Client::get_ping_interval(){
 }
 
 bool Client::initialize(){
-  char * ns = std::getenv("MAESTRO_NAMESPACE");
-  char * id = std::getenv("MAESTRO_ID");
-  if (!ns || !id || strlen(ns) == 0 || strlen(id) == 0) {
+  char * scheduler = std::getenv("MAESTRO_SCHEDULER_NAME");
+  char * id = std::getenv("MAESTRO_ROOM_ID");
+  if (!scheduler || !id || strlen(scheduler) == 0 || strlen(id) == 0) {
     return false;
   }
-  this->room_namespace = std::string(ns);
+  this->room_scheduler = std::string(scheduler);
   this->room_id = std::string(id);
   // TODO check for connectivity with maestro api
   return true;
 }
 
-bool Client::initialize(std::string ns, std::string id){
-  this->room_namespace = ns;
+bool Client::initialize(std::string scheduler, std::string id){
+  this->room_scheduler = scheduler;
   this->room_id = id;
   // TODO check for connectivity with maestro api
   return true;
@@ -68,8 +68,9 @@ bool Client::match_started() {
 }
 
 bool Client::ping() {
-  std::string put_url = (boost::format("%s/namespaces/%s/rooms/%s/ping") 
-      % this->maestro_api_url % this->room_namespace % this->room_id).str();
+  //TODO what happens if the api is offline?
+  std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping") 
+      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
   RestClient::Response r = RestClient::put(put_url, "application/json", "{\"timestamp\": }");
 	auto res = json::parse(r.body); 
 	return res.at("success");
@@ -88,8 +89,8 @@ void Client::set_ping_interval(int ping_interval) {
 }
 
 bool Client::update_status(std::string status) {
-  std::string put_url = (boost::format("%s/namespaces/%s/rooms/%s/status") 
-      % this->maestro_api_url % this->room_namespace % this->room_id).str();
+  std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status") 
+      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
   long timestamp = unix_timestamp();
   RestClient::Response r = RestClient::put(put_url, "application/json", 
       (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % status).str());

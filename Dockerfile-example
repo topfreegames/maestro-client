@@ -10,4 +10,7 @@ RUN apt-get update && apt-get -y install build-essential cmake libboost-dev curl
     && rm -rf /tmp /var/lib/apt
 ADD ./bin/example /app/example
 WORKDIR /app
+ENV MAESTRO_SCHEDULER_NAME test
+ENV MAESTRO_ROOM_NAME room1
+ENV MAESTRO_API_URL localhost:5000
 CMD ["/app/example"]

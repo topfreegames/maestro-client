@@ -18,7 +18,7 @@ namespace Maestro
       std::string maestro_api_url;
       int ping_interval;
       std::string room_id;
-      std::string room_namespace;
+      std::string room_scheduler;
     public:
       Client();
       Client(std::string maestro_api_url);
@@ -26,7 +26,7 @@ namespace Maestro
       std::string get_address();
       int get_ping_interval();
       bool initialize();
-      bool initialize(std::string ns, std::string id);
+      bool initialize(std::string scheduler, std::string id);
       bool match_ended();
       bool match_started();
       bool ping();
