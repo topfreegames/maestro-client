@@ -59,19 +59,18 @@ bool Client::initialize(std::string scheduler, std::string id){
   return true;
 }
 
-bool Client::match_ended() {
-  return this->update_status(MATCH_ENDED);
-}
-
-bool Client::match_started() {
-  return this->update_status(MATCH_STARTED);
+bool Client::room_occupied() {
+  return this->update_status(ROOM_OCCUPIED);
 }
 
 bool Client::ping() {
   //TODO what happens if the api is offline?
   std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping") 
       % this->maestro_api_url % this->room_scheduler % this->room_id).str();
-  RestClient::Response r = RestClient::put(put_url, "application/json", "{\"timestamp\": }");
+  long timestamp = unix_timestamp();
+  std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\"}")
+      % timestamp % this->status).str();
+  RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
 	auto res = json::parse(r.body); 
 	return res.at("success");
 }
@@ -89,19 +88,21 @@ void Client::set_ping_interval(int ping_interval) {
 }
 
 bool Client::update_status(std::string status) {
+  this->last_status = this->status;
+  this->status = status;
   std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status") 
       % this->maestro_api_url % this->room_scheduler % this->room_id).str();
   long timestamp = unix_timestamp();
   RestClient::Response r = RestClient::put(put_url, "application/json", 
-      (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % status).str());
+      (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"lastStatus\": \"%s\"}") % timestamp % this->status % this->last_status).str());
 	auto res = json::parse(r.body); 
 	return res.at("success");
 }
 
-bool Client::terminated() {
-  return this->update_status(TERMINATED);
+bool Client::room_terminated() {
+  return this->update_status(ROOM_TERMINATED);
 }
 
-bool Client::terminating() {
-  return this->update_status(TERMINATING);
+bool Client::room_terminating() {
+  return this->update_status(ROOM_TERMINATING);
 }

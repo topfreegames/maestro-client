@@ -24,7 +24,7 @@ void ping_loop(){
 }
 
 void signalHandler(int signum){
-  client->terminating(); 
+  client->room_terminating();
   stop.store(1);
 }
 
@@ -43,6 +43,7 @@ void initialize(){
   }
   client = new Maestro::Client(api_url);
   client->initialize(scheduler, id);
+  client->room_ready();
 }
 
 int main() {
@@ -56,6 +57,6 @@ int main() {
   stop_threads.notify_all();
   t1.join();
 
-  client->terminated(); 
+  client->room_terminated(); 
   return EXIT_SUCCESS;
 }

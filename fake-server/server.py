@@ -9,6 +9,7 @@ def address_polling(scheduler_name, room_name):
 
 @app.route("/scheduler/<scheduler_name>/rooms/<room_name>/ping", methods=['PUT'])
 def ping(scheduler_name, room_name):
+    print "ping called with data: {0}".format(request.data)
     return '{"success":true}'
 
 @app.route("/scheduler/<scheduler_name>/rooms/<room_name>/status", methods=['PUT'])
