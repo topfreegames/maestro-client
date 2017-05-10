@@ -43,6 +43,8 @@ void initialize(){
   }
   client = new Maestro::Client(api_url);
   client->initialize(scheduler, id);
+  std::string addr = client->get_address();
+  std::cout << "address " << addr << std::endl;
   client->room_ready();
 }
 

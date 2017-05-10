@@ -11,15 +11,18 @@ using namespace Maestro;
 using json = nlohmann::json;
 
 Client::Client() {
+  this->status = "creating";
   this->ping_interval = 30;
 }
 
 Client::Client(std::string maestro_api_url) {
+  this->status = "creating";
   this->maestro_api_url = maestro_api_url;
   this->ping_interval = 30;
 }
 
 Client::Client(std::string maestro_api_url, int ping_interval) {
+  this->status = "creating";
   this->maestro_api_url = maestro_api_url;
   this->ping_interval = ping_interval;
 }
@@ -30,9 +33,9 @@ std::string Client::get_address(){
   RestClient::Response r = RestClient::get(address_url);
 	auto res = json::parse(r.body); 
 	if (res.at("success")) {
-		return (boost::format("%s:%d") % res.at("host").get<std::string>() % res.at("port")).str();
+		return (boost::format("%s") % res.at("addresses")).str();
 	} else {
-		return "";
+		return "[]";
 	}
 }
 
@@ -88,13 +91,12 @@ void Client::set_ping_interval(int ping_interval) {
 }
 
 bool Client::update_status(std::string status) {
-  this->last_status = this->status;
   this->status = status;
   std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status") 
       % this->maestro_api_url % this->room_scheduler % this->room_id).str();
   long timestamp = unix_timestamp();
   RestClient::Response r = RestClient::put(put_url, "application/json", 
-      (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"lastStatus\": \"%s\"}") % timestamp % this->status % this->last_status).str());
+      (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % this->status).str());
 	auto res = json::parse(r.body); 
 	return res.at("success");
 }

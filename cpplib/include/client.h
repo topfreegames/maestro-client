@@ -19,7 +19,6 @@ namespace Maestro
       std::string room_id;
       std::string room_scheduler;
       std::string status;
-      std::string last_status;
     public:
       Client();
       Client(std::string maestro_api_url);
