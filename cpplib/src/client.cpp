@@ -12,35 +12,28 @@ using json = nlohmann::json;
 
 Client::Client() {
   this->status = "creating";
-  this->ping_interval = 30;
 }
 
 Client::Client(std::string maestro_api_url) {
   this->status = "creating";
   this->maestro_api_url = maestro_api_url;
-  this->ping_interval = 30;
-}
-
-Client::Client(std::string maestro_api_url, int ping_interval) {
-  this->status = "creating";
-  this->maestro_api_url = maestro_api_url;
-  this->ping_interval = ping_interval;
 }
 
 std::string Client::get_address(){
-  std::string address_url = (boost::format("%s/scheduler/%s/rooms/%s/address")
-      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
-  RestClient::Response r = RestClient::get(address_url);
-	auto res = json::parse(r.body); 
-	if (res.at("success")) {
-		return (boost::format("%s") % res.at("addresses")).str();
-	} else {
-		return "[]";
-	}
-}
-
-int Client::get_ping_interval(){
-  return this-> ping_interval;
+  try {
+    std::string address_url = (boost::format("%s/scheduler/%s/rooms/%s/address")
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
+    RestClient::Response r = RestClient::get(address_url);
+    auto res = json::parse(r.body);
+    if (res.at("success")) {
+      return (boost::format("%s") % res.at("addresses")).str();
+    } else {
+      return "[]";
+    }
+  } catch (std::invalid_argument e) {
+    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+  }
+  return "[]";
 }
 
 bool Client::initialize(){
@@ -68,14 +61,19 @@ bool Client::room_occupied() {
 
 bool Client::ping() {
   //TODO what happens if the api is offline?
-  std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping") 
-      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
-  long timestamp = unix_timestamp();
-  std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\"}")
-      % timestamp % this->status).str();
-  RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
-	auto res = json::parse(r.body); 
-	return res.at("success");
+  try {
+    std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping")
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
+    long timestamp = unix_timestamp();
+    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\"}")
+        % timestamp % this->status).str();
+    RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
+    auto res = json::parse(r.body); 
+    return res.at("success");
+  } catch (std::invalid_argument e) {
+    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+  }
+  return false;
 }
 
 bool Client::room_ready() {
@@ -86,19 +84,20 @@ void Client::set_maestro_api_url(std::string maestro_api_url) {
   this->maestro_api_url = maestro_api_url;
 }
 
-void Client::set_ping_interval(int ping_interval) {
-  this->ping_interval = ping_interval;
-}
-
 bool Client::update_status(std::string status) {
-  this->status = status;
-  std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status") 
-      % this->maestro_api_url % this->room_scheduler % this->room_id).str();
-  long timestamp = unix_timestamp();
-  RestClient::Response r = RestClient::put(put_url, "application/json", 
-      (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % this->status).str());
-	auto res = json::parse(r.body); 
-	return res.at("success");
+  try {
+    this->status = status;
+    std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status")
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
+    long timestamp = unix_timestamp();
+    RestClient::Response r = RestClient::put(put_url, "application/json",
+        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % this->status).str());
+    auto res = json::parse(r.body);
+    return res.at("success");
+  } catch (std::invalid_argument e) {
+    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+  }
+  return false;
 }
 
 bool Client::room_terminated() {

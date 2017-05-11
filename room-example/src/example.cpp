@@ -13,16 +13,6 @@ std::atomic<int> stop(0);
 std::condition_variable stop_threads;
 std::mutex m;
 
-void ping_loop(){
-  while (1) {
-    std::unique_lock<std::mutex> l(m);
-    client->ping();
-    std::cout << "ping sent!" << std::endl;
-    if(stop_threads.wait_for(l, std::chrono::seconds(client->get_ping_interval())) ==
-        std::cv_status::no_timeout) break;
-  }
-}
-
 void signalHandler(int signum){
   client->room_terminating();
   stop.store(1);
@@ -50,14 +40,12 @@ void initialize(){
 
 int main() {
   initialize();
-  std::thread t1(ping_loop);
 
   while (!stop.load()){
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 
   stop_threads.notify_all();
-  t1.join();
 
   client->room_terminated(); 
   return EXIT_SUCCESS;
