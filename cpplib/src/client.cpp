@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <thread>
 #include <restclient-cpp/restclient.h>
 #include "../include/utils.h"
 #include <boost/format.hpp>
@@ -12,11 +13,19 @@ using json = nlohmann::json;
 
 Client::Client() {
   this->status = "creating";
+  this->ping_interval = 30;
 }
 
 Client::Client(std::string maestro_api_url) {
   this->status = "creating";
+  this->ping_interval = 30;
   this->maestro_api_url = maestro_api_url;
+}
+
+Client::Client(std::string maestro_api_url, int ping_interval) {
+  this->status = "creating";
+  this->maestro_api_url = maestro_api_url;
+  this->ping_interval = ping_interval;
 }
 
 std::string Client::get_address(){
@@ -48,6 +57,10 @@ bool Client::initialize(){
   return true;
 }
 
+int Client::get_ping_interval() {
+  return this->ping_interval;
+}
+
 bool Client::initialize(std::string scheduler, std::string id){
   this->room_scheduler = scheduler;
   this->room_id = id;
@@ -76,12 +89,40 @@ bool Client::ping() {
   return false;
 }
 
+void Client::ping_loop(){
+  while (!this->stop_ping.load()) {
+    this->ping();
+    std::this_thread::sleep_for(std::chrono::seconds(this->ping_interval));
+  }
+}
+
+bool Client::room_terminated() {
+  return this->update_status(ROOM_TERMINATED);
+}
+
+bool Client::room_terminating() {
+  return this->update_status(ROOM_TERMINATING);
+}
+
 bool Client::room_ready() {
   return this->update_status(ROOM_READY);
 }
 
 void Client::set_maestro_api_url(std::string maestro_api_url) {
   this->maestro_api_url = maestro_api_url;
+}
+
+void Client::set_ping_interval(int interval) {
+  this->ping_interval = interval;
+}
+
+std::thread Client::start_auto_ping(){
+  this->stop_ping.store(0);
+  return std::thread(&Client::ping_loop, this);
+}
+
+void Client::stop_auto_ping(){
+  this->stop_ping.store(1);
 }
 
 bool Client::update_status(std::string status) {
@@ -98,12 +139,4 @@ bool Client::update_status(std::string status) {
     std::cout << "failed to send ping to the api e." << e.what() << "\n";
   }
   return false;
-}
-
-bool Client::room_terminated() {
-  return this->update_status(ROOM_TERMINATED);
-}
-
-bool Client::room_terminating() {
-  return this->update_status(ROOM_TERMINATING);
 }

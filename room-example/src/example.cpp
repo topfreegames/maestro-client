@@ -9,13 +9,10 @@
 #include "../../cpplib/include/client.h"
 
 Maestro::Client *client;
-std::atomic<int> stop(0);
-std::condition_variable stop_threads;
-std::mutex m;
 
 void signalHandler(int signum){
+  client-> stop_auto_ping();
   client->room_terminating();
-  stop.store(1);
 }
 
 void initialize(){
@@ -31,7 +28,7 @@ void initialize(){
 		scheduler = "test";
 		id = "test";
   }
-  client = new Maestro::Client(api_url);
+  client = new Maestro::Client(api_url, 5);
   client->initialize(scheduler, id);
   std::string addr = client->get_address();
   std::cout << "address " << addr << std::endl;
@@ -41,11 +38,8 @@ void initialize(){
 int main() {
   initialize();
 
-  while (!stop.load()){
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-
-  stop_threads.notify_all();
+  std::thread t1 = client->start_auto_ping();
+  t1.join();
 
   client->room_terminated(); 
   return EXIT_SUCCESS;

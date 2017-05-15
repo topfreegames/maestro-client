@@ -13,6 +13,11 @@ extern "C" {
     return client;
   }
 
+  Client* internal_create_client_with_ping_interval(const char * maestro_api_url, int ping_interval){
+    Client* client = new Client(maestro_api_url, ping_interval);
+    return client;
+  }
+
   char* make_string_copy (const char* str) {
     if (str == NULL) return NULL;
     char* res = (char *)malloc(strlen(str) + 1);
@@ -54,7 +59,24 @@ extern "C" {
     return obj->room_terminating();
   }
 
+  void internal_set_ping_interval(Client* obj, int ping_interval){
+    obj->set_ping_interval(ping_interval);
+  }
+
+  void internal_start_auto_ping(Client* obj) {
+    obj->start_auto_ping();
+  }
+
+  void internal_stop_auto_ping(Client* obj){
+    obj->stop_auto_ping();
+  }
+
+  int internal_get_ping_interval(Client* obj){
+    return obj->get_ping_interval();
+  }
+
   void set_debug(void(*d)(const char*)){
     debugLog = d;
   }
+
 }
