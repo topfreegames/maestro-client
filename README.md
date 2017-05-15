@@ -35,6 +35,21 @@ docker build -f Dockerfile-builder -t maestro-example-builder .
 ```
 exit from the container and, as before, if everything went well then, the ouput files should be at at ```lib/libmaestro-client.a``` and ```bin/example``` but will only work on linux.
 
+## How to integrate maestro in your game room
+
+### Unity instructions
+* Include the files in folder maestro-unity into your Assets folder
+* Initialize maestro like: MaestroClient.Initialize ("http://localhost:5000");
+* You will have to keep calling the following methods to report the room's status to maestro:
+  - RoomReady() //Every time the room is ready to receive new players, e.g. on the init or when a match has just ended
+  - RoomOccupied() //When a match is happenning on this room
+  - RoomTerminated() //When a room is to die (your room must die gracefully, you must catch SIGKILL and SIGTERM status and only let the room die when Maestro::RoomTerminated is called)
+  - RoomTerminatind() //This should be the first method you call when the room is to die, it's to be called when a gracefull shutdown will occur
+* You should also call Ping() method periodically, so that maestro knows that your room server is alive. Call it for example every 30 seconds after the first RoomReady (on room initialization)
+
+### C++ instructions
+* Same as unity, using the c++ sources inside cpplib directly or compiling the shared library with the instructions above.
+
 ## Release Map
 
 * ### Milestone 1
@@ -47,6 +62,6 @@ exit from the container and, as before, if everything went well then, the ouput 
     - [x] polling to retrieve (host / port)
     - [ ] deal with connection errors
     - [x] catch sigterm/sigkill and handle graceful shutdown
-    - [ ] unity support
+    - [x] unity support
     - [ ] tests
-    - [ ] error handling
+    - [x] error handling

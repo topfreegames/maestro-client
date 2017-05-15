@@ -1,6 +1,7 @@
 # Ignore the build and lib dirs
 build
 lib
+*.meta
 
 # Ignore any executables
 bin
