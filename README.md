@@ -39,7 +39,7 @@ exit from the container and, as before, if everything went well then, the ouput 
 
 ### Unity instructions
 * Include the files in folder maestro-unity into your Assets folder
-* Initialize maestro like: MaestroClient.Initialize ("http://localhost:5000");
+* Initialize maestro like: MaestroClient.Initialize ("http://localhost:5000"); //change localhost:5000 for a real maestro api url
 * You will have to keep calling the following methods to report the room's status to maestro:
   - RoomReady() //Every time the room is ready to receive new players, e.g. on the init or when a match has just ended
   - RoomOccupied() //When a match is happenning on this room
