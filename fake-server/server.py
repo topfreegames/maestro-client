@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/scheduler/<scheduler_name>/rooms/<room_name>/address")
 def address_polling(scheduler_name, room_name):
-    return '{"success":true, "addresses": [{"address":"localhost:6379","name":"aeah"},{"address":"localhost:6378","name":"aeah2"}]}'
+    return '{"host": "localhost", "ports": [{"port":6379,"name":"aeah"},{"port":6378,"name":"aeah2"}]}'
 
 @app.route("/scheduler/<scheduler_name>/rooms/<room_name>/ping", methods=['PUT'])
 def ping(scheduler_name, room_name):
