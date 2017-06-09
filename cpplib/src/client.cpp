@@ -33,9 +33,8 @@ std::string Client::get_address(){
     std::string address_url = (boost::format("%s/scheduler/%s/rooms/%s/address")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     RestClient::Response r = RestClient::get(address_url);
-    auto res = json::parse(r.body);
-    if (res.at("success")) {
-      return (boost::format("%s") % res.at("addresses")).str();
+    if (r.code == 200) {
+      return r.body;
     } else {
       return "[]";
     }

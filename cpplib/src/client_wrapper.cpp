@@ -26,9 +26,7 @@ extern "C" {
   }
 
   const char * internal_get_address(Client *obj) {
-    const char * res = obj->get_address().c_str();
-    char * strCopy = make_string_copy(res);
-    return strCopy;
+    return make_string_copy(obj->get_address().c_str());
   }
 
   bool internal_initialize(Client *obj){
