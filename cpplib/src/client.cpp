@@ -36,12 +36,12 @@ std::string Client::get_address(){
     if (r.code == 200) {
       return r.body;
     } else {
-      return "[]";
+      return "";
     }
   } catch (std::invalid_argument e) {
     std::cout << "failed to send ping to the api e." << e.what() << "\n";
   }
-  return "[]";
+  return "";
 }
 
 bool Client::initialize(){
