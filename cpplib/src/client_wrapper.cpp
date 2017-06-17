@@ -1,12 +1,14 @@
 #include "../include/client.h"
 #include <boost/format.hpp>
 #include <cstring>
+#include <csignal>
 
 using namespace Maestro;
 
 extern "C" {
 
   void (*debugLog)(const char*) = NULL;
+  void (*onTerminating)() = NULL;
 
   Client* internal_create_client(const char * maestro_api_url){
     Client* client = new Client(maestro_api_url);
@@ -25,11 +27,20 @@ extern "C" {
     return res;
   }
 
+  void signal_handler(int signumber) {
+    if (onTerminating != NULL) {
+      onTerminating();
+    } 
+    exit(signumber);
+  }
+
   const char * internal_get_address(Client *obj) {
     return make_string_copy(obj->get_address().c_str());
   }
 
   bool internal_initialize(Client *obj){
+    signal(SIGTERM, signal_handler);
+    signal(SIGKILL, signal_handler);
     return obj->initialize();
   }
 
@@ -75,6 +86,10 @@ extern "C" {
 
   void set_debug(void(*d)(const char*)){
     debugLog = d;
+  }
+
+  void set_on_terminating(void(*d)()){
+    onTerminating = d;
   }
 
 }
