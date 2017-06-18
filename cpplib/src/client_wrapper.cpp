@@ -31,7 +31,6 @@ extern "C" {
     if (onTerminating != NULL) {
       onTerminating();
     } 
-    exit(signumber);
   }
 
   const char * internal_get_address(Client *obj) {
@@ -39,8 +38,6 @@ extern "C" {
   }
 
   bool internal_initialize(Client *obj){
-    signal(SIGTERM, signal_handler);
-    signal(SIGKILL, signal_handler);
     return obj->initialize();
   }
 
@@ -90,6 +87,8 @@ extern "C" {
 
   void set_on_terminating(void(*d)()){
     onTerminating = d;
+    signal(SIGTERM, signal_handler);
+    signal(SIGKILL, signal_handler);
   }
 
 }
