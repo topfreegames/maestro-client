@@ -135,7 +135,7 @@ bool Client::update_status(std::string status) {
     auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {
-    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+    std::cout << "failed to send ping to the api e. " << e.what() << "\n";
   }
   return false;
 }
