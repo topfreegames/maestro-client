@@ -47,6 +47,12 @@ bin
 *.pyc
 venv
 
+# Vim temporary files
+.*swp
+*.swp
+.*swo
+*.swo
+
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
