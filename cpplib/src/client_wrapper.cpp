@@ -89,6 +89,7 @@ extern "C" {
     onTerminating = d;
     signal(SIGTERM, signal_handler);
     signal(SIGKILL, signal_handler);
+    signal(SIGINT, signal_handler);
   }
 
 }
