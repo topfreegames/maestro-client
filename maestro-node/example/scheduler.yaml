@@ -1,0 +1,26 @@
+name: scheduler-name
+game: game-name
+image: local/maestro-example:v1
+occupiedTimeout: 180
+ports:
+- containerPort: 8080
+  protocol: TCP
+  name: tcp
+shutdownTimeout: 10
+env:
+- name: MAESTRO_URL
+  value: maestro-api.maestro
+autoscaling:
+  min: 2
+  up:
+    delta: 1
+    trigger:
+      usage: 70
+      time: 10
+    cooldown: 30
+  down:
+    delta: 1
+    trigger:
+      usage: 50
+      time: 10
+    cooldown: 30
