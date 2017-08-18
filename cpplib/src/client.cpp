@@ -80,7 +80,7 @@ bool Client::ping() {
     std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\"}")
         % timestamp % this->status).str();
     RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
-    auto res = json::parse(r.body); 
+    auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {
     std::cout << "failed to send ping to the api e." << e.what() << "\n";
@@ -105,6 +105,14 @@ bool Client::room_terminating() {
 
 bool Client::room_ready() {
   return this->update_status(ROOM_READY);
+}
+
+bool Client::player_join(std::string player_id) {
+  return this->player_event(PLAYER_JOIN, player_id);
+}
+
+bool Client::player_left(std::string player_id) {
+  return this->player_event(PLAYER_LEFT, player_id);
 }
 
 void Client::set_maestro_api_url(std::string maestro_api_url) {
@@ -136,6 +144,23 @@ bool Client::update_status(std::string status) {
     return res.at("success");
   } catch (std::invalid_argument e) {
     std::cout << "failed to send ping to the api e. " << e.what() << "\n";
+  }
+  return false;
+}
+
+bool Client::player_event(std::string event, std::string player_id) {
+  try {
+    this->event = event;
+    this->player_id = player_id;
+    std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
+    long timestamp = unix_timestamp();
+    RestClient::Response r = RestClient::put(put_url, "application/json",
+        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":{\"playerId\":\"%s\"}}") % timestamp % this->event % this->player_id ).str());
+    auto res = json::parse(r.body);
+    return res.at("success");
+  } catch (std::invalid_argument e) {
+    std::cout << "failed to send player event to the api e. " << e.what() << "\n";
   }
   return false;
 }

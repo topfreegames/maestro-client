@@ -10,8 +10,10 @@
 #define ROOM_OCCUPIED "occupied"
 #define ROOM_TERMINATED "terminated"
 #define ROOM_TERMINATING "terminating"
+#define PLAYER_JOIN "playerJoin"
+#define PLAYER_LEFT "playerLeft"
 
-namespace Maestro 
+namespace Maestro
 {
   class __attribute__ ((visibility ("default"))) Client
   {
@@ -38,10 +40,13 @@ namespace Maestro
       bool room_ready();
       bool room_terminated();
       bool room_terminating();
+      bool player_join();
+      bool player_left();
       void set_ping_interval(int interval);
       std::thread start_auto_ping();
       void stop_auto_ping();
       bool update_status(std::string status);
+      bool player_event(std::string event, std::string player_id);
   };
 };
 

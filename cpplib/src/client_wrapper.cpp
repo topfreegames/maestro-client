@@ -30,7 +30,7 @@ extern "C" {
   void signal_handler(int signumber) {
     if (onTerminating != NULL) {
       onTerminating();
-    } 
+    }
   }
 
   const char * internal_get_address(Client *obj) {
@@ -63,6 +63,14 @@ extern "C" {
 
   bool internal_room_terminating(Client* obj) {
     return obj->room_terminating();
+  }
+
+  bool internal_player_join(Client* obj, const char * player_id) {
+    return obj->player_join(player_id);
+  }
+
+  bool internal_player_left(Client* obj, const char * player_id) {
+    return obj->player_left(player_id);
   }
 
   void internal_set_ping_interval(Client* obj, int ping_interval){

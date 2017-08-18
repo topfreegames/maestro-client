@@ -15,6 +15,11 @@ namespace TFG.Modules {
             Terminated,
         }
 
+        public enum Event {
+            PlayerJoin,
+            PlayerLeft,
+        }
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate void DebugLog(string log);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -106,6 +111,19 @@ namespace TFG.Modules {
             }
         }
 
+        public static void PlayerEvent(Event event, string playerId) {
+            if (!IsInitialized) return;
+
+            switch (event) {
+                case Event.PlayerJoin:
+                    PlayerJoinInternal(maestroClient, playerId);
+                    break;
+                case Event.PlayerLeft:
+                    PlayerLeftInternal(maestroClient, playerId);
+                    break;
+            }
+        }
+
         private IEnumerator PingCoroutine() {
             while (AutoPingEnable) {
                 yield return new WaitForSeconds(PingInterval);
@@ -148,6 +166,12 @@ namespace TFG.Modules {
 
         [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_terminating")]
         private static extern bool RoomTerminatingInternal(IntPtr obj);
+
+        [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_join")]
+        private static extern bool PlayerJoinInternal(IntPtr obj, string playerId);
+
+        [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_left")]
+        private static extern bool PlayerLeftInternal(IntPtr obj, string playerId);
 
         [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_set_ping_interval")]
         private static extern void SetPingIntervalInternal(IntPtr obj, int pingInterval);
