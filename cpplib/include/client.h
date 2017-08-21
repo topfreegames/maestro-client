@@ -36,17 +36,17 @@ namespace Maestro
       bool initialize(std::string scheduler, std::string id);
       bool ping();
       void set_maestro_api_url(std::string maestro_api_url);
-      bool room_occupied();
-      bool room_ready();
-      bool room_terminated();
-      bool room_terminating();
-      bool player_join();
-      bool player_left();
+      bool room_occupied(std::string metadata);
+      bool room_ready(std::string metadata);
+      bool room_terminated(std::string metadata);
+      bool room_terminating(std::string metadata);
+      bool player_join(std::string metadata);
+      bool player_left(std::string metadata);
       void set_ping_interval(int interval);
       std::thread start_auto_ping();
       void stop_auto_ping();
-      bool update_status(std::string status);
-      bool player_event(std::string event, std::string player_id);
+      bool update_status(std::string status, std::string metadata);
+      bool player_event(std::string event, std::string metadata);
   };
 };
 

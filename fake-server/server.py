@@ -17,5 +17,10 @@ def update_status(scheduler_name, room_name):
     print "update status called with data: {0}".format(request.data)
     return '{"success":true}'
 
+@app.route("/scheduler/<scheduler_name>/rooms/<room_name>/playerevent", methods=['PUT'])
+def player_event(scheduler_name, room_name):
+    print "player event called with data: {0}".format(request.data)
+    return '{"success":true}'
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

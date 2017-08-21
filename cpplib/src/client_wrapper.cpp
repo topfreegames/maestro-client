@@ -50,27 +50,51 @@ extern "C" {
   }
 
   bool internal_room_ready(Client* obj) {
-    return obj->room_ready();
+    return obj->room_ready("");
   }
 
   bool internal_room_occupied(Client* obj) {
-    return obj->room_occupied();
+    return obj->room_occupied("");
   }
 
   bool internal_room_terminated(Client* obj) {
-    return obj->room_terminated();
+    return obj->room_terminated("");
   }
 
   bool internal_room_terminating(Client* obj) {
-    return obj->room_terminating();
+    return obj->room_terminating("");
   }
 
-  bool internal_player_join(Client* obj, const char * player_id) {
-    return obj->player_join(player_id);
+  bool internal_room_ready_with_metadata(Client* obj, const char * metadata) {
+    return obj->room_ready(metadata);
   }
 
-  bool internal_player_left(Client* obj, const char * player_id) {
-    return obj->player_left(player_id);
+  bool internal_room_occupied_with_metadata(Client* obj, const char * metadata) {
+    return obj->room_occupied(metadata);
+  }
+
+  bool internal_room_terminated_with_metadata(Client* obj, const char * metadata) {
+    return obj->room_terminated(metadata);
+  }
+
+  bool internal_room_terminating_with_metadata(Client* obj, const char * metadata) {
+    return obj->room_terminating(metadata);
+  }
+
+  bool internal_player_join(Client* obj) {
+    return obj->player_join("");
+  }
+
+  bool internal_player_left(Client* obj) {
+    return obj->player_left("");
+  }
+
+  bool internal_player_join_with_metadata(Client* obj, const char * metadata) {
+    return obj->player_join(metadata);
+  }
+
+  bool internal_player_left_with_metadata(Client* obj, const char * metadata) {
+    return obj->player_left(metadata);
   }
 
   void internal_set_ping_interval(Client* obj, int ping_interval){

@@ -12,7 +12,7 @@ Maestro::Client *client;
 
 void signalHandler(int signum){
   client-> stop_auto_ping();
-  client->room_terminating();
+  client->room_terminating("");
 }
 
 void initialize(){
@@ -32,7 +32,8 @@ void initialize(){
   client->initialize(scheduler, id);
   std::string addr = client->get_address();
   std::cout << "address " << addr << std::endl;
-  client->room_ready();
+  client->room_ready("{\"playerId\":\"3ceb27dc-6841-4417-8b07-a49c118525eb\", \"roomId\":\"47b7d91e-959e-43e7-b836-eed190da81ea\"}");
+  client->player_left("{\"playerId\":\"3ceb27dc-6841-4417-8b07-a49c118525eb\"}");
 }
 
 int main() {
@@ -41,6 +42,6 @@ int main() {
   std::thread t1 = client->start_auto_ping();
   t1.join();
 
-  client->room_terminated(); 
+  client->room_terminated("");
   return EXIT_SUCCESS;
 }

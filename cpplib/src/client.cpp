@@ -67,8 +67,8 @@ bool Client::initialize(std::string scheduler, std::string id){
   return true;
 }
 
-bool Client::room_occupied() {
-  return this->update_status(ROOM_OCCUPIED);
+bool Client::room_occupied(std::string metadata) {
+  return this->update_status(ROOM_OCCUPIED, metadata);
 }
 
 bool Client::ping() {
@@ -95,24 +95,24 @@ void Client::ping_loop(){
   }
 }
 
-bool Client::room_terminated() {
-  return this->update_status(ROOM_TERMINATED);
+bool Client::room_terminated(std::string metadata) {
+  return this->update_status(ROOM_TERMINATED, metadata);
 }
 
-bool Client::room_terminating() {
-  return this->update_status(ROOM_TERMINATING);
+bool Client::room_terminating(std::string metadata) {
+  return this->update_status(ROOM_TERMINATING, metadata);
 }
 
-bool Client::room_ready() {
-  return this->update_status(ROOM_READY);
+bool Client::room_ready(std::string metadata) {
+  return this->update_status(ROOM_READY, metadata);
 }
 
-bool Client::player_join(std::string player_id) {
-  return this->player_event(PLAYER_JOIN, player_id);
+bool Client::player_join(std::string metadata) {
+  return this->player_event(PLAYER_JOIN, metadata);
 }
 
-bool Client::player_left(std::string player_id) {
-  return this->player_event(PLAYER_LEFT, player_id);
+bool Client::player_left(std::string metadata) {
+  return this->player_event(PLAYER_LEFT, metadata);
 }
 
 void Client::set_maestro_api_url(std::string maestro_api_url) {
@@ -132,14 +132,18 @@ void Client::stop_auto_ping(){
   this->stop_ping.store(1);
 }
 
-bool Client::update_status(std::string status) {
+bool Client::update_status(std::string status, std::string metadata) {
   try {
+    if (metadata.empty()) {
+      metadata = "{}";
+    }
     this->status = status;
     std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/status")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::put(put_url, "application/json",
-        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\"}") % timestamp % this->status).str());
+        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":\"%s\"}") % timestamp %
+         this->status % metadata).str());
     auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {
@@ -148,15 +152,15 @@ bool Client::update_status(std::string status) {
   return false;
 }
 
-bool Client::player_event(std::string event, std::string player_id) {
+bool Client::player_event(std::string event, std::string metadata) {
   try {
-    this->event = event;
-    this->player_id = player_id;
+    if (metadata.empty()) {
+      metadata = "{}";
+    }
     std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
-        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
-    long timestamp = unix_timestamp();
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str(); long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::put(put_url, "application/json",
-        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":{\"playerId\":\"%s\"}}") % timestamp % this->event % this->player_id ).str());
+        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":\"%s\"}") % timestamp % event % metadata ).str());
     auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {
