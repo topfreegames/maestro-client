@@ -142,7 +142,7 @@ bool Client::update_status(std::string status, std::string metadata) {
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::put(put_url, "application/json",
-        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":\"%s\"}") % timestamp %
+        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":%s}") % timestamp %
          this->status % metadata).str());
     auto res = json::parse(r.body);
     return res.at("success");
@@ -160,7 +160,7 @@ bool Client::player_event(std::string event, std::string metadata) {
     std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str(); long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::put(put_url, "application/json",
-        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":\"%s\"}") % timestamp % event % metadata ).str());
+        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":%s}") % timestamp % event % metadata ).str());
     auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {
