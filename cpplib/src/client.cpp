@@ -157,9 +157,9 @@ bool Client::player_event(std::string event, std::string metadata) {
     if (metadata.empty()) {
       metadata = "{}";
     }
-    std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
+    std::string post_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str(); long timestamp = unix_timestamp();
-    RestClient::Response r = RestClient::put(put_url, "application/json",
+    RestClient::Response r = RestClient::post(post_url, "application/json",
         (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":%s}") % timestamp % event % metadata ).str());
     auto res = json::parse(r.body);
     return res.at("success");
