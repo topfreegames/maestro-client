@@ -6,11 +6,6 @@ var maestro = addon.MaestroWorker(maestro_url);
 
 maestro.initialize();
 
-function getAddress() {
-  setTimeout(function(){
-  }, 1000);
-}
-
 console.log('getting address');
 var address = maestro.getAddress();
 console.log('address', address);
@@ -28,6 +23,7 @@ function sendStatus(index) {
       console.log('sending status terminating');
       maestro.roomTerminating();
     }
+    index = index + 1;
     if (index < 10) {
       sendStatus(index);
     }
