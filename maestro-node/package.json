@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/topfreegames/maestro-client/issues"
   },
-  "homepage": "https://github.com/topfreegames/maestro-client#readme",
+  "homepage": "https://github.com/topfreegames/maestro-client/maestro-node/#readme",
   "dependencies": {
     "nan": "^2.6.2",
     "node-gyp": "^3.6.2"
