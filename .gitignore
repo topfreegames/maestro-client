@@ -63,3 +63,4 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 node_modules
+!maestro-node/Makefile
