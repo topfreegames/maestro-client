@@ -14,9 +14,8 @@ WORKDIR /app
 
 ENV MAESTRO_URL maestro-api.maestro
 
-COPY . /app
-RUN mv /app/cpplib /cpplib
-RUN make setup 
-RUN make build
+COPY ./example/package.json /app/package.json
+RUN npm install
+COPY ./example/app.js /app/app.js
 
-CMD env MAESTRO_URL=$MAESTRO_URL node /app/example/app.js
+CMD env MAESTRO_URL=$MAESTRO_URL node /app/app.js

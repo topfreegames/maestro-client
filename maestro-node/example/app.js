@@ -1,4 +1,4 @@
-var addon = require('./../build/Release/maestro.node');
+var addon = require('./node_modules/maestro-node/build/Release/maestro.node');
 
 var maestro_url = process.env.MAESTRO_URL;
 console.log('calling maestro at', maestro_url);
@@ -26,11 +26,11 @@ function sendStatus(index) {
     index = index + 1;
     if (index < 10) {
       sendStatus(index);
+    } else {
+      console.log('sending status terminated');
+      maestro.roomTerminated();
     }
   }, 10 * 1000);
 }
 
 sendStatus(index);
-
-console.log('sending status terminated');
-maestro.roomTerminated();
