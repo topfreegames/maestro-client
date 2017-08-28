@@ -10,7 +10,7 @@
       "cflags_cc!": [ "-fno-exceptions" ],
       "include_dirs" : ["../cpplib/include", "<!(node -e \"require('nan')\")"],
       "libraries": [
-        "/usr/local/lib/librestclient-cpp.a",
+        "-lrestclient-cpp",
         "-lcurl"
       ],
       "conditions": [ 
