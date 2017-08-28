@@ -2,13 +2,13 @@
   "targets": [
     {
       "target_name": "maestro",
-      "sources": [ "../cpplib/src/client.cpp", 
-                   "../cpplib/src/utils.cpp",
-                   "addon.cpp"],
+      "sources": [ "./cpplib/src/client.cpp", 
+                   "./cpplib/src/utils.cpp",
+                   "./maestro-node/addon.cpp"],
       "cflags": ["-Wall", "-fexceptions"],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
-      "include_dirs" : ["../cpplib/include", "<!(node -e \"require('nan')\")"],
+      "include_dirs" : ["./cpplib/include", "<!(node -e \"require('nan')\")"],
       "libraries": [
         "/usr/local/lib/librestclient-cpp.a",
         "-lcurl"
