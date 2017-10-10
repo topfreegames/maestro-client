@@ -6,3 +6,9 @@ build-example-image:
 		-f example/Dockerfile \
 		-t $(IMAGE_NAME) \
 		.
+
+binary:
+	@cd .. && node-gyp rebuild maestro-node
+
+all:
+	@cd .. && node-gyp build && node-gyp rebuild
