@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "maestro-node": "^0.1.2"
+    "maestro-node": "^0.1.7"
   },
   "author": "",
   "license": "ISC"

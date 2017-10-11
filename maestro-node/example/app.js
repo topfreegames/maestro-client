@@ -1,6 +1,6 @@
 var addon = require('./node_modules/maestro-node/build/Release/maestro.node');
 
-var maestro_url = process.env.MAESTRO_URL;
+var maestro_url = process.env.MAESTRO_URL || 'http://localhost:8080';
 console.log('calling maestro at', maestro_url);
 var maestro = addon.MaestroWorker(maestro_url);
 
