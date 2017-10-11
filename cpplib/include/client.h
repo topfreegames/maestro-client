@@ -25,6 +25,7 @@ namespace Maestro
       std::string room_scheduler;
       std::string status;
       std::atomic<int> stop_ping;
+      std::string send_event(std::string route_template, std::string event, std::string metadata);
     public:
       Client();
       Client(std::string maestro_api_url);
@@ -40,13 +41,14 @@ namespace Maestro
       bool room_ready(std::string metadata);
       bool room_terminated(std::string metadata);
       bool room_terminating(std::string metadata);
-      bool player_join(std::string metadata);
-      bool player_left(std::string metadata);
+      std::string player_join(std::string metadata);
+      std::string player_left(std::string metadata);
+      std::string room_event(std::string event, std::string metadata);
       void set_ping_interval(int interval);
       std::thread start_auto_ping();
       void stop_auto_ping();
       bool update_status(std::string status, std::string metadata);
-      bool player_event(std::string event, std::string metadata);
+      std::string player_event(std::string event, std::string metadata);
   };
 };
 

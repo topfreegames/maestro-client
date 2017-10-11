@@ -81,20 +81,28 @@ extern "C" {
     return obj->room_terminating(metadata);
   }
 
-  bool internal_player_join(Client* obj) {
-    return obj->player_join("");
+  const char * internal_player_join(Client* obj) {
+    return make_string_copy(obj->player_join("").c_str());
   }
 
-  bool internal_player_left(Client* obj) {
-    return obj->player_left("");
+  const char * internal_player_left(Client* obj) {
+    return make_string_copy(obj->player_left("").c_str());
   }
 
-  bool internal_player_join_with_metadata(Client* obj, const char * metadata) {
-    return obj->player_join(metadata);
+  const char * internal_player_join_with_metadata(Client* obj, const char * metadata) {
+    return make_string_copy(obj->player_join(metadata).c_str());
   }
 
-  bool internal_player_left_with_metadata(Client* obj, const char * metadata) {
-    return obj->player_left(metadata);
+  const char * internal_player_left_with_metadata(Client* obj, const char * metadata) {
+    return make_string_copy(obj->player_left(metadata).c_str());
+  }
+
+  const char * internal_room_event(Client* obj, const char * event) {
+    return make_string_copy(obj->room_event(event, "").c_str());
+  }
+
+  const char * internal_room_event_with_metadata(Client* obj, const char * event, const char * metadata) {
+    return make_string_copy(obj->room_event(event, metadata).c_str());
   }
 
   void internal_set_ping_interval(Client* obj, int ping_interval){

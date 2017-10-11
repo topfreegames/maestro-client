@@ -23,6 +23,7 @@ class MaestroWorker : public Nan::ObjectWrap {
       Nan::SetPrototypeMethod(tpl, "roomReady", RoomReady);
       Nan::SetPrototypeMethod(tpl, "playerJoin", PlayerJoin);
       Nan::SetPrototypeMethod(tpl, "playerLeft", PlayerLeft);
+      Nan::SetPrototypeMethod(tpl, "roomEvent", RoomEvent);
       Nan::SetPrototypeMethod(tpl, "startAutoPing", StartAutoPing);
       Nan::SetPrototypeMethod(tpl, "stopAutoPing", StopAutoPing);
       Nan::SetPrototypeMethod(tpl, "getAddress", GetAddress);
@@ -132,16 +133,25 @@ class MaestroWorker : public Nan::ObjectWrap {
     MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
     std::string metadata {*Nan::Utf8String(info[0])};
     metadata = metadata == "undefined" ? "" : metadata;
-    bool success = obj->client->player_join(metadata);
-    info.GetReturnValue().Set(Nan::New<Boolean>(success));
+    string result = obj->client->player_join(metadata);
+    info.GetReturnValue().Set(Nan::New(result).ToLocalChecked());
   }
 
   static NAN_METHOD(PlayerLeft) {
     MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
     std::string metadata {*Nan::Utf8String(info[0])};
     metadata = metadata == "undefined" ? "" : metadata;
-    bool success = obj->client->player_left(metadata);
-    info.GetReturnValue().Set(Nan::New<Boolean>(success));
+    string result = obj->client->player_left(metadata);
+    info.GetReturnValue().Set(Nan::New(result).ToLocalChecked());
+  }
+
+  static NAN_METHOD(RoomEvent) {
+    MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
+    std::string event {*Nan::Utf8String(info[0])};
+    std::string metadata {*Nan::Utf8String(info[1])};
+    metadata = metadata == "undefined" ? "" : metadata;
+    string result = obj->client->room_event(event, metadata);
+    info.GetReturnValue().Set(Nan::New(result).ToLocalChecked());
   }
 
   static NAN_METHOD(StartAutoPing) {

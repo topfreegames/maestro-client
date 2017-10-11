@@ -89,28 +89,44 @@ public class MaestroClient {
     PingInternal(maestroClient);
   }
 
-  public static void PlayerEvent(Event playerEvent) {
+  public static string PlayerEvent(Event playerEvent) {
     if (!IsInitialized) return;
     switch (playerEvent) {
       case Event.Join:
-        PlayerJoinInternal (maestroClient);
+        IntPtr ptr = PlayerJoinInternal (maestroClient);
+        return Marshal.PtrToStringAuto(ptr);
         break;
       case Event.Left:
-        PlayerLeftInternal (maestroClient);
+        IntPtr ptr = PlayerLeftInternal (maestroClient);
+        return Marshal.PtrToStringAuto(ptr);
         break;
     }
   }
 
-  public static void PlayerEvent(Event playerEvent, string metadata) {
+  public static string PlayerEvent(Event playerEvent, string metadata) {
     if (!IsInitialized) return;
     switch (playerEvent) {
       case Event.Join:
-        PlayerJoinInternal (maestroClient, metadata);
+        IntPtr ptr = PlayerJoinInternal (maestroClient, metadata);
+        return Marshal.PtrToStringAuto(ptr);
         break;
       case Event.Left:
-        PlayerLeftInternal (maestroClient, metadata);
+        IntPtr ptr = PlayerLeftInternal (maestroClient, metadata);
+        return Marshal.PtrToStringAuto(ptr);
         break;
     }
+  }
+
+  public static string RoomEvent(string event) {
+    if (!IsInitialized) return;
+    IntPtr ptr = RoomEventInternal (maestroClient, event);
+    return Marshal.PtrToStringAuto(ptr);
+  }
+
+  public static string RoomEvent(string event, string metadata) {
+    if (!IsInitialized) return;
+    IntPtr ptr = RoomEventInternal (maestroClient, event, metadata);
+    return Marshal.PtrToStringAuto(ptr);
   }
 
   public static void UpdateStatus(Status status) {
@@ -203,15 +219,20 @@ public class MaestroClient {
     private static extern void SetPingIntervalInternal(IntPtr obj, int pingInterval);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_join_with_metadata")]
-    private static extern bool PlayerJoinInternal(IntPtr obj, string metadata);
+    private static extern IntPtr PlayerJoinInternal(IntPtr obj, string metadata);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_left_with_metadata")]
-    private static extern bool PlayerLeftInternal(IntPtr obj, string metadata);
+    private static extern IntPtr PlayerLeftInternal(IntPtr obj, string metadata);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_join")]
-    private static extern bool PlayerJoinInternal(IntPtr obj);
+    private static extern IntPtr PlayerJoinInternal(IntPtr obj);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_left")]
-    private static extern bool PlayerLeftInternal(IntPtr obj);
+    private static extern IntPtr PlayerLeftInternal(IntPtr obj);
 
+  [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_event_with_metadata")]
+    private static extern IntPtr RoomEventInternal(IntPtr obj, string event, string metadata);
+
+  [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_event")]
+    private static extern IntPtr RoomEventInternal(IntPtr obj, string event);
 }

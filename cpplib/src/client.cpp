@@ -107,11 +107,11 @@ bool Client::room_ready(std::string metadata) {
   return this->update_status(ROOM_READY, metadata);
 }
 
-bool Client::player_join(std::string metadata) {
+std::string Client::player_join(std::string metadata) {
   return this->player_event(PLAYER_JOIN, metadata);
 }
 
-bool Client::player_left(std::string metadata) {
+std::string Client::player_left(std::string metadata) {
   return this->player_event(PLAYER_LEFT, metadata);
 }
 
@@ -152,19 +152,33 @@ bool Client::update_status(std::string status, std::string metadata) {
   return false;
 }
 
-bool Client::player_event(std::string event, std::string metadata) {
+std::string Client::send_event(std::string route_template, std::string event, std::string metadata) {
+  json res;
   try {
     if (metadata.empty()) {
       metadata = "{}";
     }
-    std::string post_url = (boost::format("%s/scheduler/%s/rooms/%s/playerevent")
-        % this->maestro_api_url % this->room_scheduler % this->room_id).str(); long timestamp = unix_timestamp();
+    std::string post_url = (boost::format(route_template)
+        % this->maestro_api_url % this->room_scheduler % this->room_id).str();
+    long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::post(post_url, "application/json",
         (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":%s}") % timestamp % event % metadata ).str());
-    auto res = json::parse(r.body);
-    return res.at("success");
+    res["code"] = r.code;
+    res["body"] = r.body;
   } catch (std::invalid_argument e) {
     std::cout << "failed to send player event to the api e. " << e.what() << "\n";
+    res["code"] = 500;
+    json body;
+    body["error"] = e.what();
+    res["body"] = body;
   }
-  return false;
+  return res.dump();
+}
+
+std::string Client::player_event(std::string event, std::string metadata) {
+  return this->send_event("%s/scheduler/%s/rooms/%s/playerevent", event, metadata);
+}
+
+std::string Client::room_event(std::string event, std::string metadata) {
+  return this->send_event("%s/scheduler/%s/rooms/%s/roomevent", event, metadata);
 }
