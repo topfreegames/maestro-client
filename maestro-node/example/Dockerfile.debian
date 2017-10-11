@@ -2,9 +2,11 @@ FROM node:6
 
 WORKDIR /app
 
-ENV MAESTRO_URL maestro-api.maestro
+ENV MAESTRO_URL "maestro-api.maestro"
 
 COPY ./example/package.json /app/package.json
+COPY ./install.sh /app/install.sh
+RUN chmod +x /app/install.sh && /app/install.sh
 RUN npm install
 COPY ./example/app.js /app/app.js
 

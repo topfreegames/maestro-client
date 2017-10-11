@@ -8,7 +8,11 @@
       "cflags": ["-Wall", "-fexceptions"],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
-      "include_dirs" : ["./cpplib/include", "<!(node -e \"require('nan')\")"],
+      "include_dirs" : [
+        "./cpplib/include", 
+        "<!(node -e \"require('nan')\")",
+        "/usr/local/include"
+      ],
       "libraries": [
         "/usr/local/lib/librestclient-cpp.a",
         "-lcurl"
