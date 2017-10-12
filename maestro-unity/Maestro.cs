@@ -90,42 +90,52 @@ public class MaestroClient {
   }
 
   public static string PlayerEvent(Event playerEvent) {
-    if (!IsInitialized) return;
+    if (!IsInitialized) return "";
+    IntPtr ptr;
     switch (playerEvent) {
       case Event.Join:
-        IntPtr ptr = PlayerJoinInternal (maestroClient);
+        ptr = PlayerJoinInternal (maestroClient);
         return Marshal.PtrToStringAuto(ptr);
         break;
       case Event.Left:
-        IntPtr ptr = PlayerLeftInternal (maestroClient);
+        ptr = PlayerLeftInternal (maestroClient);
         return Marshal.PtrToStringAuto(ptr);
+        break;
+      default:
+        return "";
         break;
     }
   }
 
   public static string PlayerEvent(Event playerEvent, string metadata) {
-    if (!IsInitialized) return;
+    if (!IsInitialized) return "";
+    IntPtr ptr;
     switch (playerEvent) {
       case Event.Join:
-        IntPtr ptr = PlayerJoinInternal (maestroClient, metadata);
+        ptr = PlayerJoinInternal (maestroClient, metadata);
         return Marshal.PtrToStringAuto(ptr);
         break;
       case Event.Left:
-        IntPtr ptr = PlayerLeftInternal (maestroClient, metadata);
+        ptr = PlayerLeftInternal (maestroClient, metadata);
         return Marshal.PtrToStringAuto(ptr);
+        break;
+      default:
+        return "";
         break;
     }
   }
 
-  public static string RoomEvent(string event) {
-    if (!IsInitialized) return;
-    IntPtr ptr = RoomEventInternal (maestroClient, event);
+  public static string RoomEvent(string roomEvent) {
+    if (!IsInitialized) return "";
+    IntPtr ptr;
+    ptr = RoomEventInternal (maestroClient, roomEvent);
     return Marshal.PtrToStringAuto(ptr);
   }
 
-  public static string RoomEvent(string event, string metadata) {
-    if (!IsInitialized) return;
-    IntPtr ptr = RoomEventInternal (maestroClient, event, metadata);
+  public static string RoomEvent(string roomEvent, string metadata) {
+    if (!IsInitialized) return "";
+    IntPtr ptr;
+    ptr = RoomEventInternal (maestroClient, roomEvent, metadata);
     return Marshal.PtrToStringAuto(ptr);
   }
 
@@ -231,8 +241,8 @@ public class MaestroClient {
     private static extern IntPtr PlayerLeftInternal(IntPtr obj);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_event_with_metadata")]
-    private static extern IntPtr RoomEventInternal(IntPtr obj, string event, string metadata);
+    private static extern IntPtr RoomEventInternal(IntPtr obj, string roomEvent, string metadata);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_event")]
-    private static extern IntPtr RoomEventInternal(IntPtr obj, string event);
+    private static extern IntPtr RoomEventInternal(IntPtr obj, string roomEvent);
 }
