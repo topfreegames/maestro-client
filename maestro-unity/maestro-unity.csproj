@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>maestro_unity</RootNamespace>
     <PackageId>maestro_unity</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>TFG Co</Authors>
     <Company>TFG Co</Company>
   </PropertyGroup>
