@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <RootNamespace>maestro_unity</RootNamespace>
+    <PackageId>maestro_unity</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>TFG Co</Authors>
+    <Company>TFG Co</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>\Applications\Unity\Hub\Editor\2018.2.9f1\Unity.app\Contents\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".\Plugins\libmaestro.bundle">
+      <Pack>true</Pack>
+      <PackagePath>\netstandard2.0\libmaestro.bundle</PackagePath>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".\Plugins\libmaestro.so">
+      <Pack>true</Pack>
+      <PackagePath>\netstandard2.0\libmaestro.so</PackagePath>
+    </Content>
+  </ItemGroup>
+</Project>

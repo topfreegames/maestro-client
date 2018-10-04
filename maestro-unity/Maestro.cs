@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Runtime.InteropServices;
 using System;
 
@@ -96,14 +95,11 @@ public class MaestroClient {
       case Event.Join:
         ptr = PlayerJoinInternal (maestroClient);
         return Marshal.PtrToStringAuto(ptr);
-        break;
       case Event.Left:
         ptr = PlayerLeftInternal (maestroClient);
         return Marshal.PtrToStringAuto(ptr);
-        break;
       default:
         return "";
-        break;
     }
   }
 
@@ -114,14 +110,11 @@ public class MaestroClient {
       case Event.Join:
         ptr = PlayerJoinInternal (maestroClient, metadata);
         return Marshal.PtrToStringAuto(ptr);
-        break;
       case Event.Left:
         ptr = PlayerLeftInternal (maestroClient, metadata);
         return Marshal.PtrToStringAuto(ptr);
-        break;
       default:
         return "";
-        break;
     }
   }
 

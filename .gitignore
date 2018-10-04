@@ -14,6 +14,8 @@ bin
 # Prerequisites
 *.d
 
+obj
+
 # Compiled Object files
 *.slo
 *.lo
