@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
+using System.Threading;
 
 public class MaestroClient {
   public static bool AutoPingEnable = true;
@@ -78,9 +79,20 @@ public class MaestroClient {
 
       AutoPingEnable = autoPing;
       PingInterval = pingInterval;
+      var thread = new Thread(AutopingFunction);
+      thread.Start();
 
       initialized = true;
     }
+  }
+  
+  private static void AutopingFunction()
+  {
+    while (AutoPingEnable)
+    {
+      Thread.Sleep((int)PingInterval * 1000);
+      Ping();
+    } 
   }
 
   public static void Ping() {
