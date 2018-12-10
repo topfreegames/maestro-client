@@ -1,14 +1,10 @@
-FROM ubuntu:xenial
+FROM conanio/clang40
 ARG RESTCLIENT_VERSION=0.4.4
 ARG boost_version=1.63.0
 ARG boost_dir=boost_1_63_0
 ENV boost_version ${boost_version}
-RUN apt-get update && apt-get -y install build-essential cmake libboost-dev curl autoconf autogen libtool libcurl4-gnutls-dev \
-    && cd /tmp && curl -L -o restclient.tar.gz https://github.com/mrtazz/restclient-cpp/archive/$RESTCLIENT_VERSION.tar.gz \
-    && tar -zxf restclient.tar.gz && cd restclient-cpp-$RESTCLIENT_VERSION && ./autogen.sh \
-    && ./configure && make install \
-    && rm -rf /tmp /var/lib/apt
-ADD ./bin/example /app/example
+ADD _builds/linux/bin/example /app/example
+ADD _builds/linux/lib/libmaestro.so /usr/lib/libmaestro.so
 WORKDIR /app
 ENV MAESTRO_SCHEDULER_NAME test
 ENV MAESTRO_ROOM_NAME room1

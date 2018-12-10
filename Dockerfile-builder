@@ -1,13 +1,9 @@
-FROM ubuntu:xenial
+FROM conanio/clang40
 ARG RESTCLIENT_VERSION=0.4.4
 ARG boost_version=1.63.0
 ARG boost_dir=boost_1_63_0
 ENV boost_version ${boost_version}
-RUN apt-get update && apt-get -y install build-essential libboost-dev cmake curl wget autoconf autogen libtool libcurl4-gnutls-dev \
-    && cd /tmp && curl -L -o restclient.tar.gz https://github.com/mrtazz/restclient-cpp/archive/$RESTCLIENT_VERSION.tar.gz \
-    && tar -zxf restclient.tar.gz && cd restclient-cpp-$RESTCLIENT_VERSION && ./autogen.sh \
-    && ./configure && make install \
-    && cd /tmp && wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
+RUN sudo apt-get update && sudo apt-get -y install build-essential libboost-dev cmake
 VOLUME /app-src
 WORKDIR /app-src
 ENTRYPOINT ["/bin/bash"]

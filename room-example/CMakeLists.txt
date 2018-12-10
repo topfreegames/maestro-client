@@ -1,5 +1,10 @@
-FIND_PACKAGE (Threads)
+FIND_PACKAGE (Threads REQUIRED)
 ADD_EXECUTABLE(example ./src/example.cpp)
+
+if(UNIX AND NOT APPLE)
+    #target_compile_options(example PRIVATE "-stdlib=libc++")
+endif()
+
 TARGET_COMPILE_FEATURES(example PRIVATE cxx_range_for)
 FIND_LIBRARY(RC_LIB_LOCATION restclient-cpp)
 IF(RC_LIB_LOCATION)
