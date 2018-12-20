@@ -1,6 +1,9 @@
 [requires]
 libcurl/7.61.1@bincrafters/stable
 
+[options]
+*:shared = False
+
 [generators]
 cmake
 cmake_paths

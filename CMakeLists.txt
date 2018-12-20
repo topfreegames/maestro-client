@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 3.2)
 PROJECT (maestro)
 
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
 if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup(TARGETS NO_OUTPUT_DIRS)

@@ -10,30 +10,63 @@ maestro-client is [maestro's](https://github.com/topfreegames/maestro) framework
   * C++11 or newer for building
 
 ## Building
-generate the makefiles using cmake
-```
-cmake .
-```
-then make the lib and example room with make
-```
-make
-```
-if everything went well then, the ouput files should be at at ```lib/libmaestro-client.a``` and ```bin/example```
+You can generate a project using cmake. The library itself depends on Boost format and restclient-cpp, which depends on libcurl. In order to make the build process easier, the lib includes a precompiled restclient-cpp lib (for MacOS and Linux) in the repository. By passing the variable `CMAKE_PREFIX_PATH`, you can tell CMake where the library is located. For example, building a shared library for MacOS can be done with the following command:
 
-##### Docker image to build for linux
+```bash
+cmake -H. -B_builds/mac                              \ # output build artifacts to _builds/mac
+      -DCMAKE_BUILD_TYPE=Release                     \ # release build
+      -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/mac \ # restclient-cpp location in relation to the build folder
+
+cmake --build _builds/mac # build the project
+```
+
+The previous command will try to find boost and libcurl on your system. In order to build the library without shared dependencies (outside of things like `libc++`) you can install curl using `conan`. The process should be something like the following:
+
+```bash
+pip install conan # install conan if you dont have it
+conan install . -if _builds/mac # install dependencies in the _builds/mac folder
+cmake -H. -B_builds/mac -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/mac
+cmake --build _builds/mac
+```
+
+You can then check this using `otool` on MacOS or `ldd` if built for Linux:
+```bash
+$ otool -L _builds/mac/lib/libmaestro.dylib
+_builds/mac/lib/libmaestro.dylib:
+        libmaestro.dylib (compatibility version 0.0.0, current version 0.0.0)
+        /System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa (compatibility version 1.0.0, current version 23.0.0)
+        /System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 58286.200.222)
+        /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.4)
+        /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.200.5)
+        /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 1555.10.0)
+
+```
+
+The binaries should then be located at `lib/libmaestro-client.dylib` and `bin/example` in the build folder.
+
+The process for building on linux is the same as the previous one, but you have to point to the correct `restclient-cpp`, changing the path:
+
+```bash
+# Building for linux (the conan step is optional)
+conan install . -if _builds/linux
+cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux
+cmake --build _builds/linux
+```
+
+### Docker image to build for linux
 There's also a docker image available to build the lib and the room-example for linux if you are running OS X for example or simply don't want to install the dependencies to compile or haven't got it to work, use it like that:
 ```
-$ docker run -v $(pwd):/app-src -it quay.io/tfgco/maestro-example-builder:v1.0.0
+$ docker run -v $(pwd):/app-src -it quay.io/tfgco/maestro-example-builder:v2.0.0
 ## inside the container
-$ rm -f CMakeCache.txt
-$ cmake .
-$ make
+$ conan install . -if _builds/linux
+$ cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux
+$ cmake --build _builds/linux
 ```
 building the image for the builder:
 ```
 docker build -f Dockerfile-builder -t maestro-example-builder .
 ```
-exit from the container and, as before, if everything went well then, the ouput files should be at at ```lib/libmaestro-client.a``` and ```bin/example``` but will only work on linux.
+exit from the container and, as before, if everything went well then, the ouput files should be at at ```_builds/linux/lib/libmaestro-client.a``` and ```_builds/linux/bin/example``` but will only work on linux.
 
 ## How to integrate maestro in your game room
 

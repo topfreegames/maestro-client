@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 FILE(GLOB example_SRC
     "src/*.cpp"
     "include/*.h"
@@ -26,6 +28,18 @@ elseif(UNIX)
     set_target_properties(maestro PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
-TARGET_LINK_LIBRARIES(maestro PRIVATE ${RC_LIB_LOCATION} CONAN_PKG::libcurl Boost::boost)
+if(TARGET CONAN_PKG::libcurl)
+    message(STATUS "libcurl found with conan")
+    target_link_libraries(maestro PRIVATE CONAN_PKG::libcurl)
+else()
+    message(STATUS "libcurl will be searched in the system")
+    find_package(CURL REQUIRED)
+    target_link_libraries(maestro PRIVATE CURL::libcurl)
+endif()
+
+target_link_libraries(maestro
+  PRIVATE
+    ${RC_LIB_LOCATION}
+    Boost::boost)
 
 TARGET_COMPILE_FEATURES(maestro PRIVATE cxx_range_for)
