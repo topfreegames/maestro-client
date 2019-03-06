@@ -14,7 +14,19 @@ ELSE()
   MESSAGE(FATAL_ERROR "FATAL ERROR: missing library")
 ENDIF()
 
-ADD_LIBRARY(maestro SHARED ${example_SRC})
+if(BUILD_MACOSX_BUNDLE)
+    set(module_lib SHARED)
+endif()
+
+ADD_LIBRARY(maestro ${module_lib} ${example_SRC})
+
+if(BUILD_MACOSX_BUNDLE)
+    message(STATUS "Will build a Macosx bundle")
+    set_target_properties(maestro
+      PROPERTIES
+        SUFFIX ".bundle"
+        BUNDLE TRUE)
+endif()
 
 if(APPLE)
     target_include_directories(maestro
