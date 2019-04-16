@@ -71,14 +71,18 @@ bool Client::room_occupied(std::string metadata) {
   return this->update_status(ROOM_OCCUPIED, metadata);
 }
 
-bool Client::ping() {
+bool Client::ping(std::string metadata) {
+  if (metadata.empty()) {
+    metadata = "{}";
+  }
+
   //TODO what happens if the api is offline?
   try {
     std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
-    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\"}")
-        % timestamp % this->status).str();
+    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\", \"metadata\":%s}")
+        % timestamp % this->status % metadata).str();
     RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
     auto res = json::parse(r.body);
     return res.at("success");
@@ -90,7 +94,7 @@ bool Client::ping() {
 
 void Client::ping_loop(){
   while (!this->stop_ping.load()) {
-    this->ping();
+    this->ping("");
     std::this_thread::sleep_for(std::chrono::seconds(this->ping_interval));
   }
 }

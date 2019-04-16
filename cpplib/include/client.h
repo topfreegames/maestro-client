@@ -35,7 +35,7 @@ namespace Maestro
       int get_ping_interval();
       bool initialize();
       bool initialize(std::string scheduler, std::string id);
-      bool ping();
+      bool ping(std::string metadata);
       void set_maestro_api_url(std::string maestro_api_url);
       bool room_occupied(std::string metadata);
       bool room_ready(std::string metadata);

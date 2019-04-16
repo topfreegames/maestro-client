@@ -28,6 +28,7 @@ public class MaestroClient {
   private static IntPtr maestroClient = IntPtr.Zero;
   private static float PingInterval = 30;
   private static bool initialized = false;
+  private static string Metadata = "{}";
 
   private static void DebugWrapper(string log) {
 #if DEBUG
@@ -53,7 +54,7 @@ public class MaestroClient {
     }
   }
 
-  public static void Initialize(string apiUrl, string scheduler = null, string id = null, bool autoPing = true, float pingInterval = 30.0f, OnTerminating onTerminatingFunction = null) {
+  public static void Initialize(string apiUrl, string scheduler = null, string id = null, bool autoPing = true, float pingInterval = 30.0f, OnTerminating onTerminatingFunction = null, string metadata = "{}") {
     if (!initialized) {
       LinkDebugInternal (functionPointer);
       if (onTerminatingFunction != null) {
@@ -77,6 +78,7 @@ public class MaestroClient {
         Debug.LogError ("Maestro client failed to initialize 😿 : " + apiUrl);
       }
 
+      Metadata = metadata;
       AutoPingEnable = autoPing;
       PingInterval = pingInterval;
       var thread = new Thread(AutopingFunction);
@@ -97,7 +99,7 @@ public class MaestroClient {
 
   public static void Ping() {
     if (!IsInitialized) return;
-    PingInternal(maestroClient);
+    PingInternal(maestroClient, Metadata);
   }
 
   public static string PlayerEvent(Event playerEvent) {
@@ -205,6 +207,9 @@ public class MaestroClient {
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_ping")]
     private static extern bool PingInternal(IntPtr obj);
+
+  [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_ping_with_metadata")]
+    private static extern bool PingInternal(IntPtr obj, string metadata);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_room_occupied")]
     private static extern bool RoomOccupiedInternal(IntPtr obj);
