@@ -46,7 +46,7 @@ extern "C" {
   }
 
   bool internal_ping(Client* obj){
-    return obj->ping();
+    return obj->ping("");
   }
 
   bool internal_room_ready(Client* obj) {
@@ -63,6 +63,10 @@ extern "C" {
 
   bool internal_room_terminating(Client* obj) {
     return obj->room_terminating("");
+  }
+
+  bool internal_ping_with_metadata(Client* obj, const char * metadata){
+    return obj->ping(metadata);
   }
 
   bool internal_room_ready_with_metadata(Client* obj, const char * metadata) {
