@@ -1,29 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net35</TargetFrameworks>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RootNamespace>maestro_unity</RootNamespace>
     <PackageId>maestro_unity</PackageId>
-    <Version>1.0.3</Version>
     <Authors>TFG Co</Authors>
     <Company>TFG Co</Company>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>\Applications\Unity\Hub\Editor\2018.2.9f1\Unity.app\Contents\Managed\UnityEngine.dll</HintPath>
+      <HintPath>/Applications/Unity2017413f1/Unity.app/Contents/Managed/UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".\Plugins\libmaestro.bundle">
+    <Content Include="..\_builds\mac-unity\lib\libmaestro.bundle">
       <Pack>true</Pack>
-      <PackagePath>\netstandard2.0\libmaestro.bundle</PackagePath>
+      <PackagePath>..\_builds\mac-unity\lib\libmaestro.bundle</PackagePath>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".\Plugins\libmaestro.so">
+    <Content Include="..\_builds\linux\lib\libmaestro.so">
       <Pack>true</Pack>
-      <PackagePath>\netstandard2.0\libmaestro.so</PackagePath>
+      <PackagePath>..\_builds\linux\lib\libmaestro.so</PackagePath>
     </Content>
   </ItemGroup>
 </Project>

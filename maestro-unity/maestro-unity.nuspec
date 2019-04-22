@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package>
+  <metadata>
+    <id>maestro_unity</id>
+    <version>1.0.9</version>
+    <authors>leonardohahn</authors>
+    <owners>tfg</owners>
+    <projectUrl>https://github.com/topfreegames/libpitaya</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>C# client for the pitaya server</description>
+    <releaseNotes>Remove protobuf dependency</releaseNotes>
+    <licenseUrl>https://github.com/topfreegames/libpitaya/blob/master/LICENSE</licenseUrl>
+    <copyright>Copyright (c) 2018 TFG Co, NetEase Inc. and other pomelo contributors</copyright>
+    <tags>pitaya libpitaya</tags>
+  </metadata>
+  <files>
+    <file src="../_builds/mac-unity/lib/libmaestro.bundle" target="Native" />
+    <file src="NugetOutput/libmaestro.bundle.meta" target="Native" />
+
+    <file src="../_builds/linux/lib/libmaestro.so" target="Native" />
+    <file src="NugetOutput/libmaestro.so.meta" target="Native" />
+
+    <file src="bin/Release/net35/maestro-unity.dll" target="lib/net35" />
+    <file src="bin/Release/net35/maestro-unity.pdb" target="lib/net35" />
+  </files>
+</package>
