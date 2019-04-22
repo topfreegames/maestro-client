@@ -1,7 +1,6 @@
 # Ignore the build and lib dirs
 _builds
 build
-lib
 *.meta
 
 # Ignore any executables
