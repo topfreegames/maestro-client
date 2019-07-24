@@ -101,6 +101,11 @@ public class MaestroClient {
     if (!IsInitialized) return;
     PingInternal(maestroClient, Metadata);
   }
+  
+  public static void Ping(string metadata) {
+    if (!IsInitialized) return;
+    PingInternal(maestroClient, metadata);
+  }
 
   public static string PlayerEvent(Event playerEvent) {
     if (!IsInitialized) return "";
