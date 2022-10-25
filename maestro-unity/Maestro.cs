@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Runtime.InteropServices;
-using System;
+﻿using System;
 using System.Threading;
+using System.Runtime.InteropServices;
+using UnityEngine;
+using AOT;
 
 public class MaestroClient {
   public static bool AutoPingEnable = true;
@@ -29,7 +30,9 @@ public class MaestroClient {
   private static float PingInterval = 30;
   private static bool initialized = false;
   private static string Metadata = "{}";
+  private delegate void DebugWrapperDelegate(string log);
 
+  [MonoPInvokeCallback(typeof(DebugWrapperDelegate))] 
   private static void DebugWrapper(string log) {
 #if DEBUG
     Debug.Log("Maestro:" + log);
