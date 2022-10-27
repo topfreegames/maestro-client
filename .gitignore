@@ -53,6 +53,11 @@ venv
 .*swo
 *.swo
 
+# Node
+node_modules
+!maestro-node/Makefile
+
+# CMake
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
@@ -61,5 +66,7 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-node_modules
-!maestro-node/Makefile
+
+# C#
+.idea/
+*.user
