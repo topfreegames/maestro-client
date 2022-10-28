@@ -1,15 +1,15 @@
-<?xml version='1.0' encoding='utf-8'?>
-<package>
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>maestro_unity</id>
-    <version>1.1.1</version>
+    <version>1.2.1</version>
     <authors>leonardohahn</authors>
     <owners>tfg</owners>
-    <projectUrl>https://github.com/topfreegames/maestro-client</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/topfreegames/maestro-client/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/topfreegames/maestro-client</projectUrl>
     <description>C# client for the maestro client</description>
     <releaseNotes>Add MonoPInvokeCallback to make Maestro compatible with IL2CPP</releaseNotes>
-    <licenseUrl>https://github.com/topfreegames/maestro-client/blob/master/LICENSE</licenseUrl>
     <copyright>Copyright (c) 2022 TFG Co</copyright>
     <tags>maestro maestro-client</tags>
   </metadata>
