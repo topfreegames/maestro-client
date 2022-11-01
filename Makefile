@@ -1,18 +1,23 @@
+
+install:
+	@conan install . -if _builds/conan --update
+
+clean:
+	@rm -rf _builds
+
 build-mac:
 	@rm -rf _builds/mac
-	@conan install . -if _builds/mac
 	@cmake -H. -B_builds/mac -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/mac
 	@cmake --build _builds/mac
 
 build-mac-unity:
 	@rm -rf _builds/mac-unity
-	@conan install . -if _builds/mac-unity
 	@cmake -H. -B_builds/mac-unity -DCMAKE_BUILD_TYPE=Release -DBUILD_MACOSX_BUNDLE=ON -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/mac
 	@cmake --build _builds/mac-unity
 
 build-linux:
 	@rm -rf _builds/linux
-	@conan install . -if _builds/linux
+	@conan install . -if _builds/linux --update
 	@cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux
 	@cmake --build _builds/linux
 
