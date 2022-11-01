@@ -16,8 +16,11 @@ fi
 echo "Building .so lib..."
 echo "Building image..."
 docker build -f Dockerfile-builder -t maestro-example-builder:latest .
-echo "Running commands..."
-docker run -v $(pwd):/app-src maestro-example-builder:latest -c "rm -rf _builds/linux && mkdir -p _builds/linux && conan install . -if _builds/linux && cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux && cmake --build _builds/linux"
+
+echo "Running Docker commands..."
+docker run -v $(pwd):/app-src maestro-example-builder:latest -c "cmake --version && conan --version && rm -rf _builds/linux && mkdir -p _builds/linux && conan install . -if _builds/linux --build missing && cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux && cmake --build _builds/linux"
+
 echo "Copying built .so lib..."
 cp _builds/linux/lib/libmaestro.so maestro-unity/Plugins/libmaestro.so
+
 echo "Done"
