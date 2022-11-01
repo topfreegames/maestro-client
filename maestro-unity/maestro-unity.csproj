@@ -7,11 +7,15 @@
     <PackageId>maestro_unity</PackageId>
     <Authors>TFG Co</Authors>
     <Company>TFG Co</Company>
+    <PackageVersion>1.2.2</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity2017413f1/Unity.app/Contents/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>\Applications\Unity\Hub\Editor\2019.4.40f1\Unity.app\Contents\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
