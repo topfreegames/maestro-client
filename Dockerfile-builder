@@ -1,9 +1,25 @@
 FROM conanio/clang40
 ARG RESTCLIENT_VERSION=0.4.4
+ARG CMAKE_VERSION=3.21.0
 ARG boost_version=1.63.0
 ARG boost_dir=boost_1_63_0
 ENV boost_version ${boost_version}
-RUN sudo apt-get update && sudo apt-get -y install build-essential libboost-dev cmake
+
+RUN sudo apt-get update && sudo apt-get -y install build-essential libboost-dev
+
+# Install CMake
+RUN sudo rm -rf /usr/bin/cmake
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh \
+      -q -O /tmp/cmake-install.sh \
+      && sudo chmod u+x /tmp/cmake-install.sh \
+      && sudo mkdir /usr/bin/cmake \
+      && sudo /tmp/cmake-install.sh --skip-license --prefix=/usr/bin/cmake \
+      && rm /tmp/cmake-install.sh
+ENV PATH="/usr/bin/cmake/bin:${PATH}"
+
+# Upgrade Conan to 1.53.0 version
+RUN pip install conan>=1.53.0 --upgrade
+
 VOLUME /app-src
 WORKDIR /app-src
 ENTRYPOINT ["/bin/bash"]
