@@ -32,7 +32,7 @@ public class MaestroClient {
   private static string Metadata = "{}";
   private delegate void DebugWrapperDelegate(string log);
 
-  [MonoPInvokeCallback(typeof(DebugWrapperDelegate))] 
+  [MonoPInvokeCallback(typeof(DebugWrapperDelegate))]
   private static void DebugWrapper(string log) {
 #if DEBUG
     Debug.Log("Maestro:" + log);
@@ -90,21 +90,21 @@ public class MaestroClient {
       initialized = true;
     }
   }
-  
+
   private static void AutopingFunction()
   {
     while (AutoPingEnable)
     {
       Thread.Sleep((int)PingInterval * 1000);
       Ping();
-    } 
+    }
   }
 
   public static void Ping() {
     if (!IsInitialized) return;
     PingInternal(maestroClient, Metadata);
   }
-  
+
   public static void Ping(string metadata) {
     if (!IsInitialized) return;
     PingInternal(maestroClient, metadata);
@@ -192,6 +192,12 @@ public class MaestroClient {
     }
   }
 
+  public static void SetRunningMatches(int runningMatches) {
+    if (!IsInitialized) return;
+
+    SetPingIntervalInternal(maestroClient, runningMatches);
+  }
+
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_get_address")]
     private static extern IntPtr GetAddressInternal(IntPtr obj);
 
@@ -245,6 +251,9 @@ public class MaestroClient {
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_set_ping_interval")]
     private static extern void SetPingIntervalInternal(IntPtr obj, int pingInterval);
+
+  [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_set_running_matches")]
+    private static extern void SetRunningMatches(IntPtr obj, int runningMatches);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_join_with_metadata")]
     private static extern IntPtr PlayerJoinInternal(IntPtr obj, string metadata);

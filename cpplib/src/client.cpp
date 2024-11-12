@@ -14,16 +14,19 @@ using json = nlohmann::json;
 Client::Client() {
   this->status = "creating";
   this->ping_interval = 30;
+  this->running_matches = 0;
 }
 
 Client::Client(std::string maestro_api_url) {
   this->status = "creating";
   this->ping_interval = 30;
+  this->running_matches = 0;
   this->maestro_api_url = maestro_api_url;
 }
 
 Client::Client(std::string maestro_api_url, int ping_interval) {
   this->status = "creating";
+  this->running_matches = 0;
   this->maestro_api_url = maestro_api_url;
   this->ping_interval = ping_interval;
 }
@@ -81,8 +84,8 @@ bool Client::ping(std::string metadata) {
     std::string put_url = (boost::format("%s/scheduler/%s/rooms/%s/ping")
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
-    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\", \"metadata\":%s}")
-        % timestamp % this->status % metadata).str();
+    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\", \"metadata\":%s, \"running_matches\": %ld}")
+        % timestamp % this->status % metadata % this->running_matches).str();
     RestClient::Response r = RestClient::put(put_url, "application/json", putBody);
     auto res = json::parse(r.body);
     return res.at("success");
@@ -127,6 +130,10 @@ void Client::set_ping_interval(int interval) {
   this->ping_interval = interval;
 }
 
+void Client::set_running_matches(int running) {
+  this->running_matches = running;
+}
+
 std::thread Client::start_auto_ping(){
   this->stop_ping.store(0);
   return std::thread(&Client::ping_loop, this);
@@ -146,8 +153,8 @@ bool Client::update_status(std::string status, std::string metadata) {
         % this->maestro_api_url % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
     RestClient::Response r = RestClient::put(put_url, "application/json",
-        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":%s}") % timestamp %
-         this->status % metadata).str());
+        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":%s, \"running_matches\": %ld}") % timestamp %
+         this->status % metadata % this->running_matches).str());
     auto res = json::parse(r.body);
     return res.at("success");
   } catch (std::invalid_argument e) {

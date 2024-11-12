@@ -25,6 +25,7 @@ function sendStatus(index) {
     }
     index = index + 1;
     if (index < 10) {
+      maestro.runningMatches(index);
       sendStatus(index);
     } else {
       console.log('sending status terminated');

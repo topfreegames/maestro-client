@@ -20,6 +20,7 @@ namespace Maestro
     private:
       std::string maestro_api_url;
       int ping_interval;
+      int running_matches;
       void ping_loop();
       std::string room_id;
       std::string room_scheduler;
@@ -45,6 +46,7 @@ namespace Maestro
       std::string player_left(std::string metadata);
       std::string room_event(std::string event, std::string metadata);
       void set_ping_interval(int interval);
+      void set_running_matches(int running);
       std::thread start_auto_ping();
       void stop_auto_ping();
       bool update_status(std::string status, std::string metadata);
