@@ -4,7 +4,7 @@ clean:
 	@rm -rf NugetOutput/*.nupkg
 
 build: clean
-	@msbuild maestro-unity.csproj /t:Rebuild /p:Configuration=Release
+	@dotnet build maestro-unity.csproj --configuration Release --no-incremental
 
 pack: build
 	@nuget pack maestro-unity.nuspec -OutputDirectory NugetOutput

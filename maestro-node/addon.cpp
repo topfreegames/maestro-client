@@ -162,6 +162,10 @@ class MaestroWorker : public Nan::ObjectWrap {
   }
 
   static NAN_METHOD(RunningMatches) {
+    if (info.Length() == 0) {
+        Nan::ThrowTypeError("inform the number of running matches");
+        return;
+    }
     MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
     int running_matches = info[0]->IntegerValue();
     obj->client->set_running_matches(running_matches)
