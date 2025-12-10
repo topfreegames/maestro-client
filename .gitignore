@@ -70,3 +70,4 @@ CTestTestfile.cmake
 # C#
 .idea/
 *.user
+.vscode

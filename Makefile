@@ -1,6 +1,6 @@
 
 install:
-	@conan install . -if _builds/conan --update
+	@conan install . -of _builds/conan -u
 
 clean:
 	@rm -rf _builds
@@ -17,11 +17,12 @@ build-mac-unity:
 
 build-linux:
 	@rm -rf _builds/linux
-	@conan install . -if _builds/linux --update
-	@cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux
+	@conan profile detect -f
+	@conan install . -of _builds/linux -u -pr:b=default -pr:h=./profiles/linux
+	@cmake -H. -B_builds/linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=../deps/restclient-cpp/linux -DBOOST_FIND_POLICY=OLD
 	@cmake --build _builds/linux
 
 build-linux-docker:
-	@docker run -v $(shell pwd):/app-src -it quay.io/tfgco/maestro-example-builder:v2.0.0 -c "cd /app-src && make build-linux"
+	@docker run -v $(shell pwd):/app-src -it quay.io/tfgco/maestro-example-builder -c "cd /app-src && make build-linux"
 
 build-all: build-mac-unity build-linux-docker

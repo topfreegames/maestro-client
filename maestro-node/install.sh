@@ -1,3 +1,4 @@
+#!/bin/bash
 export RESTCLIENT_VERSION=0.4.4
 export boost_version=1.63.0
 export boost_dir=boost_1_63_0

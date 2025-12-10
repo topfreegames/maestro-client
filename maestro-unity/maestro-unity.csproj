@@ -15,7 +15,7 @@
       <HintPath>/Applications/Unity2017413f1/Unity.app/Contents/Managed/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>\Applications\Unity\Hub\Editor\2019.4.40f1\Unity.app\Contents\Managed\UnityEngine.dll</HintPath>
+      <HintPath>\Applications\Unity\Hub\Editor\2021.3.21f1\Unity.app\Contents\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,7 @@ class MaestroWorker : public Nan::ObjectWrap {
       Nan::SetPrototypeMethod(tpl, "startAutoPing", StartAutoPing);
       Nan::SetPrototypeMethod(tpl, "stopAutoPing", StopAutoPing);
       Nan::SetPrototypeMethod(tpl, "getAddress", GetAddress);
+      Nan::SetPrototypeMethod(tpl, "runningMatches", RunningMatches)
       constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
       Nan::Set(target, Nan::New("MaestroWorker").ToLocalChecked(),
         Nan::GetFunction(tpl).ToLocalChecked());
@@ -158,6 +159,16 @@ class MaestroWorker : public Nan::ObjectWrap {
     MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
     std::thread th = obj->client->start_auto_ping();
     th.detach();
+  }
+
+  static NAN_METHOD(RunningMatches) {
+    if (info.Length() == 0) {
+        Nan::ThrowTypeError("inform the number of running matches");
+        return;
+    }
+    MaestroWorker* obj = Nan::ObjectWrap::Unwrap<MaestroWorker>(info.Holder());
+    int running_matches = info[0]->IntegerValue();
+    obj->client->set_running_matches(running_matches)
   }
 
   static NAN_METHOD(StopAutoPing) {

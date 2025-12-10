@@ -1,9 +1,9 @@
 [requires]
-libcurl/7.64.1@#a803826c76fa2e6742e63bc718695c72
+libcurl/8.10.1
 
 [options]
 *:shared = False
 
 [generators]
-cmake
-cmake_paths
+CMakeToolchain
+CMakeDeps

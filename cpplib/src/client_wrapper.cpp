@@ -113,6 +113,10 @@ extern "C" {
     obj->set_ping_interval(ping_interval);
   }
 
+  void internal_set_running_matches(Client* obj, int running_matches){
+    obj->set_running_matches(running_matches);
+  }
+
   void internal_start_auto_ping(Client* obj) {
     obj->start_auto_ping();
   }

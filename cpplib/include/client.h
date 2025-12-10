@@ -5,6 +5,7 @@
 #include <string>
 #include <atomic>
 #include <thread>
+#include <restclient-cpp/connection.h>
 
 #define ROOM_READY "ready"
 #define ROOM_OCCUPIED "occupied"
@@ -20,12 +21,14 @@ namespace Maestro
     private:
       std::string maestro_api_url;
       int ping_interval;
+      int running_matches;
       void ping_loop();
       std::string room_id;
       std::string room_scheduler;
       std::string status;
       std::atomic<int> stop_ping;
       std::string send_event(std::string route_template, std::string event, std::string metadata);
+      RestClient::Connection* conn;
     public:
       Client();
       Client(std::string maestro_api_url);
@@ -45,6 +48,7 @@ namespace Maestro
       std::string player_left(std::string metadata);
       std::string room_event(std::string event, std::string metadata);
       void set_ping_interval(int interval);
+      void set_running_matches(int running);
       std::thread start_auto_ping();
       void stop_auto_ping();
       bool update_status(std::string status, std::string metadata);

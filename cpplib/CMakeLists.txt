@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 
+IF(NOT DEFINED BOOST_FIND_POLICY)
+  SET(BOOST_FIND_POLICY NEW)
+ENDIF()
+
+CMAKE_POLICY(SET CMP0167 ${BOOST_FIND_POLICY})
+
 FILE(GLOB example_SRC
     "src/*.cpp"
     "include/*.h"
