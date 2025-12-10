@@ -32,11 +32,27 @@ public class MaestroClient {
   private static string Metadata = "{}";
   private delegate void DebugWrapperDelegate(string log);
 
-  [MonoPInvokeCallback(typeof(DebugWrapperDelegate))]
+  // Static callback storage for IL2CPP compatibility
+  private static OnTerminating userOnTerminatingCallback = null;
+  private static readonly OnTerminating onTerminatingWrapper = OnTerminatingStaticWrapper;
+  private static readonly IntPtr onTerminatingFunctionPointer = Marshal.GetFunctionPointerForDelegate(onTerminatingWrapper);
+
+  [MonoPInvokeCallback(typeof(DebugWrapperDelegate))] 
   private static void DebugWrapper(string log) {
 #if DEBUG
     Debug.Log("Maestro:" + log);
 #endif
+  }
+
+  /// <summary>
+  /// Static wrapper for OnTerminating callback - required for IL2CPP compatibility.
+  /// IL2CPP cannot marshal instance methods or lambdas to native code.
+  /// </summary>
+  [MonoPInvokeCallback(typeof(OnTerminating))]
+  private static void OnTerminatingStaticWrapper() {
+    if (userOnTerminatingCallback != null) {
+      userOnTerminatingCallback();
+    }
   }
 
   public static string Address {
@@ -61,9 +77,9 @@ public class MaestroClient {
     if (!initialized) {
       LinkDebugInternal (functionPointer);
       if (onTerminatingFunction != null) {
-        OnTerminating terminatingFunction = onTerminatingFunction;
-        IntPtr terminateFunctionPointer = Marshal.GetFunctionPointerForDelegate (terminatingFunction);
-        LinkOnTerminatingInternal (terminateFunctionPointer);
+        // Store user callback and use static wrapper for IL2CPP compatibility
+        userOnTerminatingCallback = onTerminatingFunction;
+        LinkOnTerminatingInternal (onTerminatingFunctionPointer);
       }
       maestroClient = ClientInternal (apiUrl, 0);
 
