@@ -129,6 +129,10 @@ docker build -f Dockerfile-builder -t maestro-example-builder .
 
 exit from the container and, as before, if everything went well then, the ouput files should be at at `_builds/linux/lib/libmaestro-client.a` and `_builds/linux/bin/example` but will only work on linux.
 
+## Release
+
+Check [RELEASE.md](./RELEASE.md) for instructions
+
 ## Integrating Maestro in your game room
 
 ### Unity instructions
