@@ -13,13 +13,13 @@ using namespace Maestro;
 using json = nlohmann::json;
 
 Client::Client() {
-  this->status = "creating";
+  this->status = "pending";
   this->ping_interval = 30;
   this->running_matches = 0;
 }
 
 Client::Client(std::string maestro_api_url) {
-  this->status = "creating";
+  this->status = "pending";
   this->ping_interval = 30;
   this->running_matches = 0;
   this->maestro_api_url = maestro_api_url;
@@ -36,7 +36,7 @@ Client::Client(std::string maestro_api_url) {
 }
 
 Client::Client(std::string maestro_api_url, int ping_interval) {
-  this->status = "creating";
+  this->status = "pending";
   this->running_matches = 0;
   this->maestro_api_url = maestro_api_url;
   this->ping_interval = ping_interval;
@@ -116,7 +116,7 @@ bool Client::ping(std::string metadata) {
 
     auto res = json::parse(r.body);
 
-    if (!res.contains("success")) {
+    if (res.find("success") == res.end()) {
       std::cout << "ping failed - missing 'success' field, body: " << r.body << "\n";
       return false;
     }
