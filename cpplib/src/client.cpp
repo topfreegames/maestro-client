@@ -100,7 +100,6 @@ bool Client::ping(std::string metadata) {
     metadata = "{}";
   }
 
-  //TODO what happens if the api is offline?
   try {
     std::string put_url = (boost::format("/scheduler/%s/rooms/%s/ping")
         % this->room_scheduler % this->room_id).str();
@@ -109,12 +108,24 @@ bool Client::ping(std::string metadata) {
         % timestamp % this->status % metadata % this->running_matches).str();
 
     RestClient::Response r = this->conn->put(put_url, putBody);
+
+    if (r.code < 200 || r.code >= 300) {
+      std::cout << "ping failed - http status: " << r.code << ", body: " << r.body << "\n";
+      return false;
+    }
+
     auto res = json::parse(r.body);
-    return res.at("success");
-  } catch (std::invalid_argument e) {
-    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+
+    if (res.find("success") == res.end()) {
+      std::cout << "ping failed - missing 'success' field, body: " << r.body << "\n";
+      return false;
+    }
+
+    return res["success"].get<bool>();
+  } catch (const std::exception& e) {
+    std::cout << "ping failed: " << e.what() << "\n";
+    return false;
   }
-  return false;
 }
 
 void Client::ping_loop(){
