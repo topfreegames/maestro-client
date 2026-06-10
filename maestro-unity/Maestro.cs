@@ -211,7 +211,7 @@ public class MaestroClient {
   public static void SetRunningMatches(int runningMatches) {
     if (!IsInitialized) return;
 
-    SetPingIntervalInternal(maestroClient, runningMatches);
+    SetRunningMatchesInternal(maestroClient, runningMatches);
   }
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_get_address")]
@@ -269,7 +269,7 @@ public class MaestroClient {
     private static extern void SetPingIntervalInternal(IntPtr obj, int pingInterval);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_set_running_matches")]
-    private static extern void SetRunningMatches(IntPtr obj, int runningMatches);
+    private static extern void SetRunningMatchesInternal(IntPtr obj, int runningMatches);
 
   [DllImport("libmaestro", CallingConvention = CallingConvention.Cdecl, EntryPoint = "internal_player_join_with_metadata")]
     private static extern IntPtr PlayerJoinInternal(IntPtr obj, string metadata);
