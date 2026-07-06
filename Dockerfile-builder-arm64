@@ -1,0 +1,36 @@
+# Build environment for the Linux arm64 (aarch64) libmaestro.so.
+#
+# Unlike Dockerfile-builder (x86_64, conan + precompiled restclient-cpp), this
+# builds natively for arm64 on a debian:bookworm base so the resulting .so
+# targets glibc 2.36 (matching the game-room runtime images). Dependencies:
+#   - Boost + libcurl from apt (the CMake finds them on the system)
+#   - restclient-cpp 0.4.4 built from source into /opt/restclient-arm64
+#     (0.4.4 is the version the bundled deps/restclient-cpp headers expect;
+#      0.5.x changed the RestClient::Connection ctor signature)
+#   - CMake >= 3.30 (the project's CMakeLists uses policy CMP0167)
+FROM --platform=linux/arm64 debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+ && apt-get install -yq --no-install-recommends \
+      build-essential ninja-build git pkg-config ca-certificates wget \
+      autoconf automake libtool libcurl4-openssl-dev libboost-all-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# CMake 3.30.5 (aarch64)
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.30.5/cmake-3.30.5-linux-aarch64.sh -O /tmp/cmake.sh \
+ && sh /tmp/cmake.sh --skip-license --prefix=/usr/local \
+ && rm /tmp/cmake.sh
+
+# restclient-cpp 0.4.4 (static, PIC) -> /opt/restclient-arm64
+RUN git clone --depth 1 --branch 0.4.4 https://github.com/mrtazz/restclient-cpp /tmp/restclient \
+ && cd /tmp/restclient \
+ && ./autogen.sh \
+ && ./configure --prefix=/opt/restclient-arm64 --enable-static --disable-shared --with-pic \
+ && make -j"$(nproc)" \
+ && make install \
+ && rm -rf /tmp/restclient
+
+WORKDIR /app-src
+ENTRYPOINT ["/bin/bash"]
