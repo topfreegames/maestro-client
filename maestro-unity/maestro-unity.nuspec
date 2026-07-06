@@ -20,6 +20,9 @@
     <file src="../_builds/linux/lib/libmaestro.so" target="Native" />
     <file src="NugetOutput/libmaestro.so.meta" target="Native" />
 
+    <file src="../_builds/linux-arm64/lib/libmaestro.so" target="Native/arm64" />
+    <file src="NugetOutput/arm64/libmaestro.so.meta" target="Native/arm64" />
+
     <file src="bin/Release/net35/maestro-unity.dll" target="lib/net35" />
     <file src="bin/Release/net35/maestro-unity.pdb" target="lib/net35" />
   </files>

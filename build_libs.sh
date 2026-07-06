@@ -23,4 +23,15 @@ docker run -v $(pwd):/app-src maestro-example-builder:latest -c "cmake --version
 echo "Copying built .so lib..."
 cp _builds/linux/lib/libmaestro.so maestro-unity/Plugins/libmaestro.so
 
+echo "Building .so lib (linux arm64)..."
+echo "Building arm64 image..."
+docker buildx build --platform linux/arm64 -f Dockerfile-builder-arm64 -t maestro-builder-arm64:latest --load .
+
+echo "Running arm64 build..."
+docker run --platform linux/arm64 -v $(pwd):/app-src maestro-builder-arm64:latest -c "rm -rf _builds/linux-arm64 && cmake -H. -B_builds/linux-arm64 -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/opt/restclient-arm64 -DBOOST_FIND_POLICY=OLD -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_FLAGS='-Wno-error -Wno-deprecated-declarations' -DCMAKE_SHARED_LINKER_FLAGS='-Wl,--no-as-needed -lcurl -Wl,--as-needed' && cmake --build _builds/linux-arm64 --target maestro"
+
+echo "Copying built arm64 .so lib..."
+mkdir -p maestro-unity/Plugins/arm64
+cp _builds/linux-arm64/lib/libmaestro.so maestro-unity/Plugins/arm64/libmaestro.so
+
 echo "Done"
