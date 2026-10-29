@@ -7,7 +7,7 @@
     <PackageId>maestro_unity</PackageId>
     <Authors>TFG Co</Authors>
     <Company>TFG Co</Company>
-    <PackageVersion>1.2.2</PackageVersion>
+    <PackageVersion>1.6.1</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
