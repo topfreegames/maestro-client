@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <atomic>
+#include <mutex>
 #include <thread>
 #include <restclient-cpp/connection.h>
 
@@ -13,6 +14,10 @@
 #define ROOM_TERMINATING "terminating"
 #define PLAYER_JOIN "playerJoin"
 #define PLAYER_LEFT "playerLeft"
+// Calls are serialized on one connection, so a hung request would block every
+// other call (including the game thread) until it ends. Keep this below the
+// ping interval.
+#define REQUEST_TIMEOUT_SECONDS 10
 
 namespace Maestro
 {
@@ -21,7 +26,7 @@ namespace Maestro
     private:
       std::string maestro_api_url;
       int ping_interval;
-      int running_matches;
+      std::atomic<int> running_matches;
       void ping_loop();
       std::string room_id;
       std::string room_scheduler;
@@ -29,6 +34,9 @@ namespace Maestro
       std::atomic<int> stop_ping;
       std::string send_event(std::string route_template, std::string event, std::string metadata);
       RestClient::Connection* conn;
+      // The autoping thread and the game thread share conn, but a curl handle
+      // must not be used by two threads at once. Also guards status.
+      std::mutex conn_mutex;
     public:
       Client();
       Client(std::string maestro_api_url);

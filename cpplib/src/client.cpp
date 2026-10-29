@@ -27,6 +27,7 @@ Client::Client(std::string maestro_api_url) {
   RestClient::init();
   RestClient::Connection* con = new RestClient::Connection(this->maestro_api_url);
   con->SetUserAgent("maestro/gs-client");
+  con->SetTimeout(REQUEST_TIMEOUT_SECONDS);
 
   RestClient::HeaderFields headers;
   headers["Content-Type"] = "application/json";
@@ -44,6 +45,7 @@ Client::Client(std::string maestro_api_url, int ping_interval) {
   RestClient::init();
   RestClient::Connection* con = new RestClient::Connection(this->maestro_api_url);
   con->SetUserAgent("maestro/gs-client");
+  con->SetTimeout(REQUEST_TIMEOUT_SECONDS);
 
   RestClient::HeaderFields headers;
   headers["Content-Type"] = "application/json";
@@ -56,14 +58,18 @@ std::string Client::get_address(){
   try {
     std::string address_url = (boost::format("/scheduler/%s/rooms/%s/address")
         % this->room_scheduler % this->room_id).str();
-    RestClient::Response r = this->conn->get(address_url);
+    RestClient::Response r;
+    {
+      std::lock_guard<std::mutex> lock(this->conn_mutex);
+      r = this->conn->get(address_url);
+    }
     if (r.code == 200) {
       return r.body;
     } else {
       return "";
     }
-  } catch (std::invalid_argument e) {
-    std::cout << "failed to send ping to the api e." << e.what() << "\n";
+  } catch (const std::exception& e) {
+    std::cout << "failed to get address from the api: " << e.what() << "\n";
   }
   return "";
 }
@@ -104,10 +110,14 @@ bool Client::ping(std::string metadata) {
     std::string put_url = (boost::format("/scheduler/%s/rooms/%s/ping")
         % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
-    std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\", \"metadata\":%s, \"running_matches\": %d}")
-        % timestamp % this->status % metadata % this->running_matches).str();
 
-    RestClient::Response r = this->conn->put(put_url, putBody);
+    RestClient::Response r;
+    {
+      std::lock_guard<std::mutex> lock(this->conn_mutex);
+      std::string putBody = (boost::format("{\"timestamp\": %ld, \"status\": \"%s\", \"metadata\":%s, \"running_matches\": %d}")
+          % timestamp % this->status % metadata % this->running_matches.load()).str();
+      r = this->conn->put(put_url, putBody);
+    }
 
     if (r.code < 200 || r.code >= 300) {
       std::cout << "ping failed - http status: " << r.code << ", body: " << r.body << "\n";
@@ -181,18 +191,22 @@ bool Client::update_status(std::string status, std::string metadata) {
     if (metadata.empty()) {
       metadata = "{}";
     }
-    this->status = status;
     std::string put_url = (boost::format("/scheduler/%s/rooms/%s/status")
         % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
 
-    RestClient::Response r = this->conn->put(put_url,
-        (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":%s, \"running_matches\": %d}") % timestamp %
-         this->status % metadata % this->running_matches).str());
+    RestClient::Response r;
+    {
+      std::lock_guard<std::mutex> lock(this->conn_mutex);
+      this->status = status;
+      r = this->conn->put(put_url,
+          (boost::format("{\"timestamp\":%ld, \"status\":\"%s\", \"metadata\":%s, \"running_matches\": %d}") % timestamp %
+           this->status % metadata % this->running_matches.load()).str());
+    }
     auto res = json::parse(r.body);
     return res.at("success");
-  } catch (std::invalid_argument e) {
-    std::cout << "failed to send ping to the api e. " << e.what() << "\n";
+  } catch (const std::exception& e) {
+    std::cout << "failed to update status in the api: " << e.what() << "\n";
   }
   return false;
 }
@@ -206,11 +220,15 @@ std::string Client::send_event(std::string route_template, std::string event, st
     std::string post_url = (boost::format(route_template) % this->room_scheduler % this->room_id).str();
     long timestamp = unix_timestamp();
 
-    RestClient::Response r = this->conn->post(post_url,
-        (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":%s}") % timestamp % event % metadata ).str());
+    RestClient::Response r;
+    {
+      std::lock_guard<std::mutex> lock(this->conn_mutex);
+      r = this->conn->post(post_url,
+          (boost::format("{\"timestamp\":%ld, \"event\":\"%s\", \"metadata\":%s}") % timestamp % event % metadata ).str());
+    }
     res["code"] = r.code;
     res["body"] = r.body;
-  } catch (std::invalid_argument e) {
+  } catch (const std::exception& e) {
     std::cout << "failed to send player event to the api e. " << e.what() << "\n";
     res["code"] = 500;
     json body;

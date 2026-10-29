@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>maestro_unity</id>
-    <version>1.2.2</version>
+    <version>1.6.1</version>
     <authors>leonardohahn</authors>
     <owners>tfg</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/topfreegames/maestro-client/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/topfreegames/maestro-client</projectUrl>
     <description>C# client for the maestro client</description>
-    <releaseNotes>Update libcurl</releaseNotes>
+    <releaseNotes>Fix heap corruption when calls overlap (autoping and game thread), add a 10s request timeout</releaseNotes>
     <copyright>Copyright (c) 2022 TFG Co</copyright>
     <tags>maestro maestro-client</tags>
   </metadata>
