@@ -14,6 +14,10 @@
 #define ROOM_TERMINATING "terminating"
 #define PLAYER_JOIN "playerJoin"
 #define PLAYER_LEFT "playerLeft"
+// Calls are serialized on one connection, so a hung request would block every
+// other call (including the game thread) until it ends. Keep this below the
+// ping interval.
+#define REQUEST_TIMEOUT_SECONDS 10
 
 namespace Maestro
 {

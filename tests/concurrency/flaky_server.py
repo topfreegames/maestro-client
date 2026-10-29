@@ -1,8 +1,8 @@
 """Fake Maestro API that misbehaves the way EU did in SUP-8845.
 
 Most requests succeed, but some are slow, some drop the connection without
-answering (libcurl reports this as status -1, "Failed to query.") and some
-send a truncated body. Uses only the standard library so it runs in the
+answering (libcurl reports this as status -1, "Failed to query."), some
+send a truncated body and a few hang for two minutes. Uses only the standard library so it runs in the
 builder image without pip.
 """
 
@@ -12,6 +12,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 OK_BODY = b'{"success":true}'
+HANG_SECONDS = 120
 
 
 class FlakyHandler(BaseHTTPRequestHandler):
@@ -26,6 +27,9 @@ class FlakyHandler(BaseHTTPRequestHandler):
             self.rfile.read(length)
 
         roll = random.random()
+        if roll < 0.02:
+            # Hang far longer than the client's request timeout.
+            time.sleep(HANG_SECONDS)
         if roll < 0.15:
             # Drop the connection without a response.
             self.close_connection = True

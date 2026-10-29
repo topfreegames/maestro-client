@@ -27,6 +27,7 @@ Client::Client(std::string maestro_api_url) {
   RestClient::init();
   RestClient::Connection* con = new RestClient::Connection(this->maestro_api_url);
   con->SetUserAgent("maestro/gs-client");
+  con->SetTimeout(REQUEST_TIMEOUT_SECONDS);
 
   RestClient::HeaderFields headers;
   headers["Content-Type"] = "application/json";
@@ -44,6 +45,7 @@ Client::Client(std::string maestro_api_url, int ping_interval) {
   RestClient::init();
   RestClient::Connection* con = new RestClient::Connection(this->maestro_api_url);
   con->SetUserAgent("maestro/gs-client");
+  con->SetTimeout(REQUEST_TIMEOUT_SECONDS);
 
   RestClient::HeaderFields headers;
   headers["Content-Type"] = "application/json";

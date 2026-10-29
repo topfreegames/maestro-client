@@ -3,7 +3,8 @@
 // thread reports status, running matches and player events.
 //
 // Usage: stress [seconds]   (MAESTRO_API_URL defaults to http://127.0.0.1:5000)
-// Exits 0 if the process survives the whole run.
+// Exits 0 if the process survives the whole run and no call stays blocked
+// behind a hung request.
 
 #include <atomic>
 #include <chrono>
@@ -57,10 +58,22 @@ int main(int argc, char** argv) {
 
   std::this_thread::sleep_for(std::chrono::seconds(seconds));
   stop.store(true);
+  auto stopped_at = std::chrono::steady_clock::now();
   for (auto& t : threads) {
     t.join();
   }
+  auto drain = std::chrono::duration_cast<std::chrono::seconds>(
+      std::chrono::steady_clock::now() - stopped_at).count();
 
-  std::cerr << "survived " << seconds << "s, " << calls.load() << " calls\n";
+  std::cerr << "survived " << seconds << "s, " << calls.load() << " calls, "
+            << drain << "s to finish in-flight calls\n";
+
+  // At most four calls can be queued on the connection when we stop (one per
+  // thread, two for the player thread), each capped by the request timeout.
+  // A hung request that isn't cut off keeps everyone waiting much longer.
+  if (drain > 4 * REQUEST_TIMEOUT_SECONDS + 5) {
+    std::cerr << "calls stayed blocked behind a hung request\n";
+    return EXIT_FAILURE;
+  }
   return EXIT_SUCCESS;
 }
