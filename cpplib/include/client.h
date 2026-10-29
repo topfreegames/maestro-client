@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <atomic>
+#include <mutex>
 #include <thread>
 #include <restclient-cpp/connection.h>
 
@@ -21,7 +22,7 @@ namespace Maestro
     private:
       std::string maestro_api_url;
       int ping_interval;
-      int running_matches;
+      std::atomic<int> running_matches;
       void ping_loop();
       std::string room_id;
       std::string room_scheduler;
@@ -29,6 +30,9 @@ namespace Maestro
       std::atomic<int> stop_ping;
       std::string send_event(std::string route_template, std::string event, std::string metadata);
       RestClient::Connection* conn;
+      // The autoping thread and the game thread share conn, but a curl handle
+      // must not be used by two threads at once. Also guards status.
+      std::mutex conn_mutex;
     public:
       Client();
       Client(std::string maestro_api_url);

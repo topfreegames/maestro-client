@@ -1,0 +1,10 @@
+FIND_PACKAGE(Threads REQUIRED)
+FIND_LIBRARY(RC_LIB_LOCATION restclient-cpp)
+
+ADD_EXECUTABLE(stress stress.cpp)
+if(APPLE)
+    target_include_directories(stress PRIVATE ${CMAKE_SOURCE_DIR}/deps/restclient-cpp/mac/include)
+else()
+    target_include_directories(stress PRIVATE ${CMAKE_SOURCE_DIR}/deps/restclient-cpp/linux/include)
+endif()
+TARGET_LINK_LIBRARIES(stress maestro ${CMAKE_THREAD_LIBS_INIT} ${RC_LIB_LOCATION})

@@ -3,6 +3,7 @@ PROJECT (maestro)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_MACOSX_BUNDLE "If it should build a .bundle library" OFF)
+option(MAESTRO_BUILD_STRESS "Build the concurrency stress test (tests/concurrency)" OFF)
 
 SET(MAESTRO_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/_builds)
 SET(CONAN_DEPS_DIR ${MAESTRO_OUTPUT_DIR}/conan)
@@ -21,3 +22,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory (cpplib)
 add_subdirectory (room-example)
+
+if(MAESTRO_BUILD_STRESS)
+    add_subdirectory (tests/concurrency)
+endif()

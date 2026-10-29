@@ -129,6 +129,10 @@ docker build -f Dockerfile-builder -t maestro-example-builder .
 
 exit from the container and, as before, if everything went well then, the ouput files should be at at `_builds/linux/lib/libmaestro-client.a` and `_builds/linux/bin/example` but will only work on linux.
 
+### Concurrency stress test
+
+`tests/concurrency/run.sh` builds the library for linux/arm64 in Docker and calls one client from several threads (autoping plus game calls) against a fake Maestro that drops and truncates responses. It should print `PASS`. Set `SANITIZE=address` for an AddressSanitizer build and `DURATION` to change the run length (default 60s).
+
 ## Release
 
 Check [RELEASE.md](./RELEASE.md) for instructions
